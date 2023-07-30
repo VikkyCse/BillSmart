@@ -1,20 +1,9 @@
 const sequlize = require('./models/database')
 
 const express = require('express')
-const {
-    Shop,
-    Category,
-    Item,
-    User,
-    Transaction,
-    Cart,
-    CartItem,
-    Coupon,
-    Naturals,
-    Order,
-    OrderItem,
-    //... other models
-} = require('./models/index');
+
+// Pass the hashed function as a parameter to the User model definition
+const User = require('./models/user')
 app = express()
 app.get('/', async (req, res) => {
     try {
@@ -29,6 +18,7 @@ app.get('/', async (req, res) => {
             rollNo: 'ABC123',
             password: 'password123',
         });
+        res.send(newUser.toJSON())
 
         // The `newUser` variable will now hold the newly created user object
         console.log('New user created:', newUser.toJSON());
