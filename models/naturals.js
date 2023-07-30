@@ -8,13 +8,7 @@ const Naturals = sequlize.define('Naturals', {
         primaryKey: true,
         autoIncrement: true,
     },
-    user_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: User,
-            key: 'id',
-        },
-    },
+
     time: {
         type: DataTypes.DATE,
     },

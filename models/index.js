@@ -11,6 +11,7 @@ const Coupon = require('./coupon');
 const Naturals = require('./naturals');
 const Order = require('./order');
 const OrderItem = require('./orderItem');
+const TransactionType = require('./TranscationType');
 
 // Define model associations (relationships)
 Category.belongsTo(Shop, { foreignKey: 'shop_id', targetKey: 'id' });

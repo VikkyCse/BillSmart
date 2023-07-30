@@ -11,14 +11,7 @@ const Category = sequlize.define('Category', {
     name: {
         type: DataTypes.STRING,
     },
-    parent_category_id: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        references: {
-            model: Category,
-            key: 'id',
-        },
-    },
+
 });
 
 module.exports = Category;

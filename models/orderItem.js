@@ -9,23 +9,11 @@ const OrderItem = sequlize.define('OrderItem', {
         primaryKey: true,
         autoIncrement: true,
     },
-    product_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Item,
-            key: 'id',
-        },
-    },
+
     qty: {
         type: DataTypes.INTEGER,
     },
-    order_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Order,
-            key: 'id',
-        },
-    },
+
 });
 
 module.exports = OrderItem;

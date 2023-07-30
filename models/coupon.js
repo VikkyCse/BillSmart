@@ -9,13 +9,7 @@ const Coupon = sequlize.define('Coupon', {
         autoIncrement: true,
         unique: true,
     },
-    user_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: User,
-            key: 'id',
-        },
-    },
+
     coupon_name: {
         type: DataTypes.STRING,
     },

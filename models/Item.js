@@ -11,13 +11,7 @@ const Item = sequlize.define('Item', {
     name: {
         type: DataTypes.STRING,
     },
-    category_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Category,
-            key: 'id',
-        },
-    },
+
     veg: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,

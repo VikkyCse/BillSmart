@@ -9,20 +9,7 @@ const Order = sequlize.define('Order', {
         primaryKey: true,
         autoIncrement: true,
     },
-    order_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Transaction,
-            key: 'id',
-        },
-    },
-    user_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: User,
-            key: 'id',
-        },
-    },
+
 });
 
 module.exports = Order;
