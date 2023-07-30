@@ -27,11 +27,10 @@ CartItem.belongsTo(Cart, { foreignKey: 'Cart_id', targetKey: 'id' });
 Coupon.belongsToMany(User, { through: 'UserCoupon', foreignKey: 'coupon_id' });
 User.belongsToMany(Coupon, { through: 'UserCoupon', foreignKey: 'user_id' });
 Naturals.belongsTo(User, { foreignKey: 'user_id', targetKey: 'id' });
-Order.belongsTo(Transaction, { foreignKey: 'order_id', targetKey: 'id' });
+Order.belongsTo(Transaction, { foreignKey: 'transcation_id', targetKey: 'id' });
 Order.belongsTo(User, { foreignKey: 'user_id', targetKey: 'id' });
 OrderItem.belongsTo(Item, { foreignKey: 'product_id', targetKey: 'id' });
-OrderItem.belongsTo(Order, { foreignKey: 'order_id', targetKey: 'id' });
-OrderItem.belongsTo(Cart, { foreignKey: 'cart_id', targetKey: 'id' });
+OrderItem.belongsTo(Order, { foreignKey: 'order_id', targetKey: 'id' })
 
 // Export the models
 module.exports = {
