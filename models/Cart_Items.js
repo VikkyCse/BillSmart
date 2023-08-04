@@ -1,20 +1,20 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('./database');
-const Transaction = require('./Transaction');
 const Item = require('./items');
+const Cart = require('./Cart');
 
-const Order = sequelize.define('Order', {
+const CartItem = sequelize.define('Cart_Item', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  Quantity: {
+  Count: {
     type: DataTypes.INTEGER,
   },
 });
 
-Order.belongsTo(Transaction, { foreignKey: 'order_id' });
-Order.belongsTo(Item, { foreignKey: 'Product_id' });
+CartItem.belongsTo(Item, { foreignKey: 'Item_id' });
+CartItem.belongsTo(Cart, { foreignKey: 'Cart_id' });
 
-module.exports = Order;
+module.exports = CartItem;

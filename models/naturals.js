@@ -1,20 +1,18 @@
 const { DataTypes } = require('sequelize');
-const sequlize = require('./database');
-const User = require('./user');
+const sequelize = require('./database');
+const User = require('./User');
 
-const Naturals = sequlize.define('Naturals', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-    },
-
-    time: {
-        type: DataTypes.DATE,
-    },
-    amt: {
-        type: DataTypes.DECIMAL,
-    },
+const Naturals = sequelize.define('Naturals', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  time: {
+    type: DataTypes.DATE,
+  },
 });
+
+Naturals.belongsTo(User, { foreignKey: 'user_id' });
 
 module.exports = Naturals;

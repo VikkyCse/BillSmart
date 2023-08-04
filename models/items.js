@@ -1,7 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('./database');
+const Category = require('./Category');
 
-const Shop = sequelize.define('Shop', {
+const Item = sequelize.define('Item', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -11,10 +12,20 @@ const Shop = sequelize.define('Shop', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  veg: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true,
+  },
   image: {
     type: DataTypes.BLOB,
     allowNull: true,
   },
+  price: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+  },
 });
 
-module.exports = Shop;
+Item.belongsTo(Category, { foreignKey: 'category_id' });
+
+module.exports = Item;

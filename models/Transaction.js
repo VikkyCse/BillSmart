@@ -1,56 +1,33 @@
 const { DataTypes } = require('sequelize');
-const sequlize = require('./database');
-const User = require('./user');
-const TransactionType = require('./TranscationType');
-const Coupon = require('./coupon');
-const Order = require('./order');
+const sequelize = require('./database');
+const User = require('./User');
+const Coupon = require('./Coupon');
+const CartItem = require('./Cart_Items');
 
-const Transaction = sequlize.define('Transaction', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        unique: true,
-    },
-    user_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: User, 
-            key: 'id',
-        },
-    },
-    Amount: {
-        type: DataTypes.DECIMAL,
-    },
-    Transaction_Time: {
-        type: DataTypes.DATE,
-    },
-    Type: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: TransactionType,
-            key: 'id',
-        },
-    },
-    Is_completed: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-    },
-    coupon_id: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        references: {
-            model: Coupon,
-            key: 'id',
-        },
-    },
-    order_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Order,
-            key: 'id',
-        },
-    },
+const Transaction = sequelize.define('Transaction', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+    unique: true,
+  },
+  Amount: {
+    type: DataTypes.DECIMAL,
+  },
+  Transaction_Time: {
+    type: DataTypes.DATE,
+  },
+  Type: {
+    type: DataTypes.INTEGER,
+  },
+  Is_completed: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
 });
+
+Transaction.belongsTo(User, { foreignKey: 'user_id' });
+Transaction.belongsTo(Coupon, { foreignKey: 'coupon_id' });
+Transaction.belongsTo(CartItem, { foreignKey: 'cart_item_id' });
 
 module.exports = Transaction;
