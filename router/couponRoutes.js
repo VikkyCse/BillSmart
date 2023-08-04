@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const couponController = require('../controllers/couponController');
-
+const isAdmin = require('../middleware/authorization').isAdmin;
+const isUser = require('../middleware/authorization').isUser;
 // Create a new coupon
 router.post('/coupons', couponController.createCoupon);
 
