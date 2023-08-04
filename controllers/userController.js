@@ -6,7 +6,7 @@ const { validationResult } = require('express-validator');
 
 dotenv.config();
 
-const secretKey = process.env.JWT_SECRET;
+const secretKey = "mysecretpassword123";
 
 // Create a new user
 const createUser = async (req, res) => {
