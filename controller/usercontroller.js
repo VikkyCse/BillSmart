@@ -2,23 +2,23 @@ const User = require('../models/user')
 const { checkpass, hashed } = require('../hashPassword')
 const CreateUser = async (req, res) => {
     try {
-        const { name,rfid, User_name, password , usertype,gender,isHosteller,rollNo } = req.body;
+        const { name ,rfid, User_name, password , usertype,gender,isHosteller,rollNo } = req.body;
 
         // Find the user with the given name, or create a new user if it doesn't exist
         const [username, created] = await User.findOrCreate({
             where: { rfid },
-            defaults: { name,rfid, User_name, password , usertype,gender,isHosteller,rollNo }
+            defaults: { name ,rfid, User_name, password , usertype,gender,isHosteller,rollNo }
         });
 
         if (created) {
             // New user was created
-            return res.status(200).json(user.toJSON());
+            return res.status(200).json(username.toJSON());
         } else {
             // User with the same name already exists
             return res.status(200).json({ message: 'User already exists with the same name.' });
         }
     } catch (err) {
-        return res.status(200).json({ message: err.message });
+        return res.status(200).json({ "message": err.message });
     }
 }
 const updateUser = async (req, res) => {
