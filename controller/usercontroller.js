@@ -42,7 +42,7 @@ const UserLogin = async (req, res) => {
     try {
 
         const { name, password , rfid } = req.query;
-
+console.log(name,password,rfid);
         
         if(rfid){
             
@@ -53,7 +53,7 @@ const UserLogin = async (req, res) => {
         else{
 
              const user = await User.findOne({ where: { name: name } })
-             // console.log(user.password);
+              console.log(checkpass(password, user.password));
              if (checkpass(password, user.password))
                  res.end(JSON.stringify({ "message": true }));
              else
@@ -84,7 +84,7 @@ const UserLogin = async (req, res) => {
 
 module.exports = {
     // rfidLogin : rfidLogin,
-    UserLogin: UserLogin,
+     UserLogin: UserLogin,
     updateUser: updateUser,
     CreateUser: CreateUser
 }

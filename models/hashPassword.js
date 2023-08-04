@@ -22,4 +22,4 @@ const checkpass = (userpassword, dbpassword) => {
 
 }
 
-module.exports = { checkpass, hashed }
+// module.exports = { checkpass, hashed }

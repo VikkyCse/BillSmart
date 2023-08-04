@@ -19,7 +19,7 @@ const hashed = (pass) => {
 const checkpass = (userpassword, dbpassword) => {
 
     // Compare the provided password with the hashed password
-    console.log(userpassword);
+    // console.log(userpassword);
     return bcrypt.compareSync(userpassword, dbpassword);
 
 
