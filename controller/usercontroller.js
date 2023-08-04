@@ -23,7 +23,7 @@ const CreateUser = async (req, res) => {
 }
 const updateUser = async (req, res) => {
     const { name, email, id } = req.body
-    // let password 
+    let password 
     if (req.body.password)
         password = hashed(req.body.password)
 
