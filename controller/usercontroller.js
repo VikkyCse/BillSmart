@@ -22,7 +22,7 @@ const CreateUser = async (req, res) => {
     }
 }
 const updateUser = async (req, res) => {
-    const { name, email, id } = req.body
+    const { name, id, User_name, usertype,gender,isHosteller,rollNo } = req.body
     let password 
     if (req.body.password)
         password = hashed(req.body.password)
@@ -31,7 +31,7 @@ const updateUser = async (req, res) => {
     const DbUser = await User.findOne({ where: { name: name } })
 
     try {
-        const user = await User.update({ name: name || DbUser.name, email: email || DbUser.name, password: password || DbUser.password }, { where: { id: id || DbUser.id } })
+        const user = await User.update({ name: name || DbUser.name, password: password || DbUser.password, User_name: User_name || DbUser.User_name,usertype:usertype || DbUser.usertype,gender:gender || DbUser.gender,isHosteller:isHosteller || DbUser.isHosteller,rollNo:rollNo || DbUser.rollNo }, { where: { id: id || DbUser.id } })
 
         return res.json(user).status(200)
     } catch (err) {
