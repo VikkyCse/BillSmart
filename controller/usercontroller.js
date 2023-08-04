@@ -31,7 +31,7 @@ const updateUser = async (req, res) => {
     const DbUser = await User.findOne({ where: { name: name } })
 
     try {
-        const user = await User.update({ name: name || DbUser.name, email: email || DbUser.name, password: password || DbUser.password }, { where: { id: id || DbUser.id } })
+        const user = await User.update({ name: name || DbUser.name, email: email || DbUser.email , password: password || DbUser.password }, { where: { id: id || DbUser.id } })
 
         return res.json(user).status(200)
     } catch (err) {
@@ -41,14 +41,25 @@ const updateUser = async (req, res) => {
 const UserLogin = async (req, res) => {
     try {
 
-        const { name, password } = req.query;
+        const { name, password , rfid } = req.query;
 
-        const user = await User.findOne({ where: { name: name } })
-        console.log(user.password);
-        if (checkpass(password, user.password))
+        
+        if(rfid){
+            
+            const user = await User.findOne({ where: { rfid:rfid } })
             res.end(JSON.stringify({ "message": true }));
-        else
-            res.end(JSON.stringify({ "message": false }));
+        }
+        
+        else{
+
+             const user = await User.findOne({ where: { name: name } })
+             // console.log(user.password);
+             if (checkpass(password, user.password))
+                 res.end(JSON.stringify({ "message": true }));
+             else
+                 res.end(JSON.stringify({ "message": false }));
+         }
+
 
     } catch (err) {
         res.status(200).send(JSON.stringify({ "message": "No user found" }));
