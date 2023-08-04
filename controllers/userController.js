@@ -1,4 +1,12 @@
 const User = require('../models/User');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+const { validationResult } = require('express-validator');
+
+dotenv.config();
+
+const secretKey = process.env.JWT_SECRET;
 
 // Create a new user
 const createUser = async (req, res) => {
