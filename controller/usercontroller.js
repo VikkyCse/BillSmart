@@ -65,25 +65,25 @@ const UserLogin = async (req, res) => {
         res.status(200).send(JSON.stringify({ "message": "No user found" }));
     }
 }
-const rfidLogin = async (req, res) => {
-    try {
+// const rfidLogin = async (req, res) => {
+//     try {
 
-        const { rfid, password } = req.query;
+//         const { rfid, password } = req.query;
 
-        const user = await User.findOne({ where: { rfid: rfid } })
-        console.log(user.password);
-        if (checkpass(password, user.password))
-            res.end(JSON.stringify({ "message": true }));
-        else
-            res.end(JSON.stringify({ "message": false }));
+//         const user = await User.findOne({ where: { rfid: rfid } })
+//         console.log(user.password);
+//         if (checkpass(password, user.password))
+//             res.end(JSON.stringify({ "message": true }));
+//         else
+//             res.end(JSON.stringify({ "message": false }));
 
-    } catch (err) {
-        res.status(200).send(JSON.stringify({ "message": "No user found" }));
-    }
-}
+//     } catch (err) {
+//         res.status(200).send(JSON.stringify({ "message": "No user found" }));
+//     }
+// }
 
 module.exports = {
-    rfidLogin : rfidLogin,
+    // rfidLogin : rfidLogin,
     UserLogin: UserLogin,
     updateUser: updateUser,
     CreateUser: CreateUser
