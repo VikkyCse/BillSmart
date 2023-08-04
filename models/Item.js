@@ -23,6 +23,7 @@ const Item = sequlize.define('Item', {
     price: {
         type: DataTypes.FLOAT,
     },
+    
 });
 
 module.exports = Item;
