@@ -57,7 +57,7 @@ const deleteShop = async (req, res) => {
         const shop = await Shop.findByPk(id);
 
         if (!shop) {
-            return res.status(200).json({ message: "Shop not found" });
+            return res.status(200).json({ message: "Shop not found"});
         }
 
         // Delete the shop
