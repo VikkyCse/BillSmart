@@ -53,7 +53,7 @@ console.log(name,password,rfid);
         else{
 
              const user = await User.findOne({ where: { name: name } })
-              console.log(checkpass(password, user.password));
+              console.log(checkpass(password, user.password)); 
              if (checkpass(password, user.password))
                  res.end(JSON.stringify({ "message": true }));
              else
