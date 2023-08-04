@@ -8,7 +8,7 @@ const cartRoutes = require('./router/cartRoutes');
 const cartItemRoutes = require('./router/cartItemRoutes');
 const couponRoutes = require('./router/couponRoutes');
 const naturalsRoutes = require('./router/naturalsRoutes');
-const authRoutes = require('./router/authRoutes');
+
 app = express();
 
 app.use(express.json());
@@ -22,7 +22,7 @@ app.use('/carts', cartRoutes);
 app.use('/cartitems', cartItemRoutes);
 app.use('/coupons', couponRoutes);
 app.use('/naturals', naturalsRoutes);
-app.use('/auth', authRoutes);
+
 
 const PORT = 8000;
 app.listen(PORT, async () => {

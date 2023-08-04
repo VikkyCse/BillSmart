@@ -61,10 +61,65 @@ const deleteUser = async (req, res) => {
   }
 };
 
+// User registration
+const registerUser = async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { name, rfid, User_name, password, usertype, gender, isHosteller, rollNo } = req.body;
+
+  try {
+    const existingUser = await User.findOne({ where: { User_name } });
+
+    if (existingUser) {
+      return res.status(400).json({ message: 'Username already exists' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await User.create({ name, rfid, User_name, password: hashedPassword, usertype, gender, isHosteller, rollNo });
+
+    return res.status(201).json({ message: 'User registered successfully' });
+  } catch (error) {
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+// User login
+const loginUser = async (req, res) => {
+  const { name, password, rfid } = req.body;
+
+  try {
+    let user;
+
+    if (rfid) {
+      user = await User.findOne({ where: { rfid } });
+    } else {
+      user = await User.findOne({ where: { name } });
+      if (!user || !(await bcrypt.compare(password, user.password))) {
+        return res.status(401).json({ message: 'Invalid credentials' });
+      }
+    }
+
+    const token = jwt.sign({ id: user.id, User_name: user.User_name }, secretKey, {
+      expiresIn: '1h',
+    });
+
+    return res.json({ token });
+  } catch (error) {
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 module.exports = {
-  createUser,
   getAllUsers,
   getUserById,
+  createUser,
   updateUser,
   deleteUser,
+  registerUser, 
+  loginUser,    
 };
