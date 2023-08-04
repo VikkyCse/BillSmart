@@ -1,20 +1,31 @@
-const sequlize = require('./models/database');
-const userRoutes = require('./router/userrouter');
+const sequelize = require('./models/database');
 const express = require('express');
+const userRoutes = require('./router/userrouter');
 const itemRoutes = require('./router/itemrouter');
 const shopRoutes = require('./router/shoprouter');
-const orderRoutes = require('./router/orderrouter')
-app = express()
-app.use(express.json())
-app.use('/user', userRoutes);
-app.use('/item', itemRoutes);
+const orderRoutes = require('./router/orderrouter');
+const cartRoutes = require('./router/cartrouter');
+const cartItemRoutes = require('./router/cartitemrouter');
+const couponRoutes = require('./router/couponrouter');
+const naturalsRoutes = require('./router/naturalsrouter');
+
+app = express();
+
+app.use(express.json());
+
+// Routes for each model
+app.use('/users', userRoutes);
+app.use('/items', itemRoutes);
+app.use('/shops', shopRoutes);
 app.use('/orders', orderRoutes);
-app.use('/shop', shopRoutes);
+app.use('/carts', cartRoutes);
+app.use('/cartitems', cartItemRoutes);
+app.use('/coupons', couponRoutes);
+app.use('/naturals', naturalsRoutes);
 
-
-
-app.listen(8000, async (req, res) => {
-    console.log("server http://localhost:8000");
-    await sequlize.sync({ force : true }); //force - alter
-    console.log("db sync")
-})
+const PORT = 8000;
+app.listen(PORT, async () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+  await sequelize.sync({ alter:true }); //alter - force
+  console.log("Database synced");
+});

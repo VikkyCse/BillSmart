@@ -1,13 +1,13 @@
-const Order = require('../models/order');
+const Order = require('../models/Order');
 
 // Create a new order
 const createOrder = async (req, res) => {
   try {
-    const { totalAmount, customerId } = req.body;
-    const order = await Order.create({ totalAmount, customerId });
-    res.status(200).json(order);
+    const { order_id, Quantity, Product_id } = req.body;
+    const order = await Order.create({ order_id, Quantity, Product_id });
+    res.status(201).json(order);
   } catch (err) {
-    res.status(200).json({ error: 'Error creating the order' });
+    res.status(500).json({ error: 'Error creating the order' });
   }
 };
 
@@ -17,7 +17,7 @@ const getAllOrders = async (req, res) => {
     const orders = await Order.findAll();
     res.status(200).json(orders);
   } catch (err) {
-    res.status(200).json({ error: 'Error fetching orders' });
+    res.status(500).json({ error: 'Error fetching orders' });
   }
 };
 
@@ -31,7 +31,7 @@ const getOrderById = async (req, res) => {
     }
     res.status(200).json(order);
   } catch (err) {
-    res.status(200).json({ error: 'Error fetching order by ID' });
+    res.status(500).json({ error: 'Error fetching order by ID' });
   }
 };
 
@@ -39,14 +39,14 @@ const getOrderById = async (req, res) => {
 const updateOrder = async (req, res) => {
   try {
     const orderId = req.params.id;
-    const { totalAmount, customerId } = req.body;
+    const { order_id, Quantity, Product_id } = req.body;
     const updatedOrder = await Order.update(
-      { totalAmount, customerId },
+      { order_id, Quantity, Product_id },
       { where: { id: orderId } }
     );
     res.status(200).json(updatedOrder);
   } catch (err) {
-    res.status(200).json({ error: 'Error updating the order' });
+    res.status(500).json({ error: 'Error updating the order' });
   }
 };
 
@@ -55,9 +55,9 @@ const deleteOrder = async (req, res) => {
   try {
     const orderId = req.params.id;
     await Order.destroy({ where: { id: orderId } });
-    res.status(200).end(); 
+    res.status(204).end(); // 204 No Content - Successfully deleted
   } catch (err) {
-    res.status(200).json({ error: 'Error deleting the order' });
+    res.status(500).json({ error: 'Error deleting the order' });
   }
 };
 
