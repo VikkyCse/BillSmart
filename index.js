@@ -1,13 +1,13 @@
 const sequelize = require('./models/database');
 const express = require('express');
-const userRoutes = require('./router/userrouter');
-const itemRoutes = require('./router/itemrouter');
-const shopRoutes = require('./router/shoprouter');
-const orderRoutes = require('./router/orderrouter');
-const cartRoutes = require('./router/cartrouter');
-const cartItemRoutes = require('./router/cartitemrouter');
-const couponRoutes = require('./router/couponrouter');
-const naturalsRoutes = require('./router/naturalsrouter');
+const userRoutes = require('./router/userRoutes');
+const itemRoutes = require('./router/itemRoutes');
+const shopRoutes = require('./router/shopRoutes');
+const orderRoutes = require('./router/orderRoutes');
+const cartRoutes = require('./router/cartRoutes');
+const cartItemRoutes = require('./router/cartItemRoutes');
+const couponRoutes = require('./router/couponRoutes');
+const naturalsRoutes = require('./router/naturalsRoutes');
 
 app = express();
 
@@ -26,6 +26,6 @@ app.use('/naturals', naturalsRoutes);
 const PORT = 8000;
 app.listen(PORT, async () => {
   console.log(`Server running on http://localhost:${PORT}`);
-  await sequelize.sync({ alter:true }); //alter - force
+  await sequelize.sync({ alter : true }); // alter - force
   console.log("Database synced");
 });
