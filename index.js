@@ -1,11 +1,15 @@
-const sequlize = require('./models/database')
+const sequlize = require('./models/database');
 const userRoutes = require('./router/userrouter');
-const express = require('express')
+const express = require('express');
 const itemRoutes = require('./router/itemrouter');
+const shopRoutes = require('./router/shoprouter');
+// const orderRoutes = require('./router/orderrouter')
 app = express()
 app.use(express.json())
 app.use('/user', userRoutes);
 app.use('/item', itemRoutes);
+// app.use('/order', orderRoutes);
+app.use('/shop', shopRoutes);
 
 
 
