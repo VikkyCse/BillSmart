@@ -30,7 +30,7 @@ router.post(
 router.get('/login', userController.loginUser);
 
 // Read all users
-router.get('/users', userController.getAllUsers);
+router.get('/', userController.getAllUsers);
 
 // Read a specific user by ID
 router.get('/:id', userController.getUserById);
