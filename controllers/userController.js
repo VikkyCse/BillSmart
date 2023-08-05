@@ -1,12 +1,12 @@
 const User = require('../models/User');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+// const bcrypt = require('bcryptjs');
+// const jwt = require('jsonwebtoken');
 // const dotenv = require('dotenv');
 const { validationResult } = require('express-validator');
 
 // dotenv.config();
 
-const secretKey = "mysecretpassword123";
+// const secretKey = "mysecretpassword123";
 
 // Create a new user
 const createUser = async (req, res) => {
@@ -112,11 +112,11 @@ const loginUser = async (req, res) => {
       }
     }
 
-    const token = jwt.sign({ id: user.id, User_name: user.User_name }, secretKey, {
-      expiresIn: '1h',
-    });
+    // const token = jwt.sign({ id: user.id, User_name: user.User_name }, secretKey, {
+    //   expiresIn: '1h',
+    // });
 
-    return res.json({ token });
+    return res.json({ true });
   } catch (error) {
     return res.status(500).json({ message: 'Internal server error' });
   }

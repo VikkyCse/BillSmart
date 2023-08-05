@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 const { body } = require('express-validator');
-const isAdmin = require('../middleware/authorization').isAdmin;
-const isUser = require('../middleware/authorization').isUser;
+// const isAdmin = require('../middleware/authorization').isAdmin;
+// const isUser = require('../middleware/authorization').isUser;
 // Create a new user
 router.post(
     '/create',
