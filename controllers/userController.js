@@ -1,10 +1,10 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
+// const dotenv = require('dotenv');
 const { validationResult } = require('express-validator');
 
-dotenv.config();
+// dotenv.config();
 
 const secretKey = "mysecretpassword123";
 
