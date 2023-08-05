@@ -8,7 +8,7 @@ const cartRoutes = require('./router/cartRoutes');
 const cartItemRoutes = require('./router/cartItemRoutes');
 const couponRoutes = require('./router/couponRoutes');
 const naturalsRoutes = require('./router/naturalsRoutes');
-
+const orderItem = require('./models/orderItem')
 app = express();
 
 app.use(express.json());
@@ -27,6 +27,6 @@ app.use('/naturals', naturalsRoutes);
 const PORT = 8000;
 app.listen(PORT, async () => {
   console.log(`Server running on http://localhost:${PORT}`);
-  await sequelize.sync({ alter : true }); // alter - force
+  await sequelize.sync({ alter: true }); // alter - force
   console.log("Database synced");
 });

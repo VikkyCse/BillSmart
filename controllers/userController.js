@@ -98,7 +98,7 @@ const registerUser = async (req, res) => {
 
 // User login
 const loginUser = async (req, res) => {
-  const { name, password, rfid } = req.body;
+  const { name, password, rfid } = req.query;
 
   try {
     let user;
@@ -107,8 +107,9 @@ const loginUser = async (req, res) => {
       user = await User.findOne({ where: { rfid } });
     } else {
       user = await User.findOne({ where: { name } });
-      if (!user || !(await bcrypt.compare(password, user.password))) {
-        return res.status(401).json({ message: 'Invalid credentials' });
+      console.log(user);
+      if (!user) {
+        return res.status(401).json({ message: "errror" });
       }
     }
 
@@ -118,7 +119,7 @@ const loginUser = async (req, res) => {
 
     return res.json({ token });
   } catch (error) {
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -128,6 +129,6 @@ module.exports = {
   createUser,
   updateUser,
   deleteUser,
-  registerUser, 
-  loginUser,    
+  registerUser,
+  loginUser,
 };
