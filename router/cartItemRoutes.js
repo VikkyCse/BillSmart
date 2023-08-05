@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const cartItemController = require('../controllers/cartItemController');
+const isAdmin = require('../middleware/authorization').isAdmin;
+const isUser = require('../middleware/authorization').isUser;
 
 // Create a new cart item
 router.post('/cartitems', cartItemController.createCartItem);

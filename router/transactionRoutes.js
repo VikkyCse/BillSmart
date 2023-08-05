@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const transactionController = require('../controllers/transactionController');
-
+const isAdmin = require('../middleware/authorization').isAdmin;
+const isUser = require('../middleware/authorization').isUser;
 // Create a new transaction
 router.post('/transactions', transactionController.createTransaction);
 
