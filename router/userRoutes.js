@@ -6,7 +6,7 @@ const isAdmin = require('../middleware/authorization').isAdmin;
 const isUser = require('../middleware/authorization').isUser;
 // Create a new user
 router.post(
-    'users/create',
+    '/create',
     [
       body('name', 'Name is required').notEmpty(),
       body('rfid', 'RFID is required').notEmpty(),
@@ -33,12 +33,12 @@ router.get('/login', userController.loginUser);
 router.get('/users', userController.getAllUsers);
 
 // Read a specific user by ID
-router.get('/users/:id', userController.getUserById);
+router.get('/:id', userController.getUserById);
 
 // Update a user by ID
-router.put('/users/:id', userController.updateUser);
+router.put('/:id', userController.updateUser);
 
 // Delete a user by ID
-router.delete('/users/:id', userController.deleteUser);
+router.delete('/:id', userController.deleteUser);
 
 module.exports = router;

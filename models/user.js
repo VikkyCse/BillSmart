@@ -24,6 +24,8 @@ const User = sequelize.define('User', {
   },
   usertype: {
     type: DataTypes.INTEGER(1),
+    allowNull: false,
+    defaultValue: 0,
   },
   gender: {
     type: DataTypes.BOOLEAN,
@@ -44,6 +46,7 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  
 });
 
 module.exports = User;
