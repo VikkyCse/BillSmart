@@ -15,7 +15,7 @@ app.use(express.json());
 
 // Routes for each model
 app.use('/users', userRoutes);
-app.use('/items', itemRoutes);
+app.use('/', itemRoutes);
 app.use('/shops', shopRoutes);
 app.use('/orders', orderRoutes);
 app.use('/carts', cartRoutes);

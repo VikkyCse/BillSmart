@@ -1,5 +1,5 @@
 const isAdmin = (req, res, next) => {
-    if (req.user.role !== 1) {
+    if (req.user.usertype !== 1) {
       return res.status(403).json({ message: 'Not authorized' });
     }
     next();
@@ -8,7 +8,7 @@ const isAdmin = (req, res, next) => {
 
   
   const isUser = (req, res, next) => {
-    if (req.user.role !== 0) {
+    if (req.user.usertype !== 0) {
       return res.status(403).json({ message: 'Not authorized' });
     }
     next();

@@ -1,15 +1,15 @@
 
 // Import all the models
 const Shop = require('./shop');
-const Category = require('./category');
+const Category = require('./Category');
 const Item = require('./Item');
-const User = require('./user');
+const User = require('./User');
 const Transaction = require('./Transaction');
-const Cart = require('./cart');
+const Cart = require('./Cart');
 const CartItem = require('./cartItem');
-const Coupon = require('./coupon');
-const Naturals = require('./naturals');
-const Order = require('./order');
+const Coupon = require('./Coupon');
+const Naturals = require('./Naturals');
+const Order = require('./Order');
 const OrderItem = require('./orderItem');
 const TransactionType = require('./TranscationType');
 
@@ -45,5 +45,5 @@ module.exports = {
     Naturals,
     Order,
     OrderItem,
-    //... other models
+    
 };
