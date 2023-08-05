@@ -116,7 +116,7 @@ const loginUser = async (req, res) => {
     //   expiresIn: '1h',
     // });
 
-    return res.json({ true });
+    return res.json({ message : true });
   } catch (error) {
     return res.status(500).json({ message: 'Internal server error' });
   }
