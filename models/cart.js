@@ -9,5 +9,6 @@ const Cart = sequlize.define('Cart', {
         autoIncrement: true,
     }
 });
+Cart.belongsTo(User)
 
 module.exports = Cart;
