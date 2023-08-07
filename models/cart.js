@@ -9,6 +9,6 @@ const Cart = sequlize.define('Cart', {
         autoIncrement: true,
     }
 });
-Cart.belongsTo(User)
+Cart.belongsTo(User,{ foreignKey: 'user_id' })
 
 module.exports = Cart;

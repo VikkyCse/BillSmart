@@ -5,9 +5,10 @@ const itemRoutes = require('./router/itemRoutes');
 const shopRoutes = require('./router/shopRoutes');
 const orderRoutes = require('./router/orderRoutes');
 const cartRoutes = require('./router/cartRoutes');
-const cartItemRoutes = require('./router/cartItemRoutes');
+// const cartItemRoutes = require('./router/cartItemRoutes');
 const couponRoutes = require('./router/couponRoutes');
 const naturalsRoutes = require('./router/naturalsRoutes');
+// const orderItem = require('./models/orderItem')
 app = express();
 
 app.use(express.json());
@@ -17,8 +18,8 @@ app.use('/users', userRoutes);
 app.use('/', itemRoutes);
 app.use('/shops', shopRoutes);
 app.use('/orders', orderRoutes);
-app.use('/carts', cartRoutes);
-app.use('/cartitems', cartItemRoutes);
+app.use('/cart', cartRoutes);
+// app.use('/cartitems', cartItemRoutes);
 app.use('/coupons', couponRoutes);
 app.use('/naturals', naturalsRoutes);
 

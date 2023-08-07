@@ -1,70 +1,87 @@
 const Cart = require('../models/Cart');
+const CartItem = require('../models/Cart_Items');
+const Item = require('../models/Item');
 
-// Create a new cart
-const createCart = async (req, res) => {
+// Read a specific cart by user ID
+const getCartByUserId = async (req, res) => {
   try {
-    const { user_id } = req.body;
-    const cart = await Cart.create({ user_id });
-    res.status(201).json(cart);
-  } catch (err) {
-    res.status(500).json({ error: 'Error creating the cart' });
-  }
-};
+    const user_id = req.params.id;
 
-// Read all carts
-const getAllCarts = async (req, res) => {
-  try {
-    const carts = await Cart.findAll();
-    res.status(200).json(carts);
-  } catch (err) {
-    res.status(500).json({ error: 'Error fetching carts' });
-  }
-};
+    // Find the cart associated with the user_id
+    const cart = await Cart.findOne({ where: { user_id: user_id } });
 
-// Read a specific cart by ID
-const getCartById = async (req, res) => {
-  try {
-    const cartId = req.params.id;
-    const cart = await Cart.findByPk(cartId);
     if (!cart) {
-      return res.status(404).json({ message: 'Cart not found' });
+      // If cart doesn't exist, create a new cart and return it
+      const newCart = await Cart.create({ user_id });
+      res.status(200).json(newCart);
+    } else {
+      // If cart exists, fetch its associated items
+      const cartItems = await CartItem.findAll({
+        where: { Cart_id: cart.id },
+        include: [Item],
+      });
+      res.status(200).json({
+        cart: cart,
+        items: cartItems,
+      });
     }
-    res.status(200).json(cart);
   } catch (err) {
     res.status(500).json({ error: 'Error fetching cart by ID' });
-  }
-};
-
-// Update a cart by ID
-const updateCart = async (req, res) => {
-  try {
-    const cartId = req.params.id;
-    const { user_id } = req.body;
-    const updatedCart = await Cart.update(
-      { user_id },
-      { where: { id: cartId } }
-    );
-    res.status(200).json(updatedCart);
-  } catch (err) {
-    res.status(500).json({ error: 'Error updating the cart' });
   }
 };
 
 // Delete a cart by ID
 const deleteCart = async (req, res) => {
   try {
-    const cartId = req.params.id;
-    await Cart.destroy({ where: { id: cartId } });
+    const user_id = req.params.id;
+    await Cart.destroy({ where: { user_id: user_id } });
     res.status(204).end(); // 204 No Content - Successfully deleted
   } catch (err) {
     res.status(500).json({ error: 'Error deleting the cart' });
   }
 };
 
+// Create a cart item
+const createCartItem = async (req, res) => {
+  try {
+    const { Item_id, Count, user_id } = req.body;
+    const cartItem = await CartItem.create({ Item_id, Count, user_id });
+    res.status(201).json(cartItem);
+  } catch (err) {
+    res.status(500).json({ error: 'Error creating the cart item' });
+  }
+};
+
+// Update a cart item by ID
+const updateCartItem = async (req, res) => {
+  try {
+    const cartItemId = req.params.id;
+    const { Item_id, Count } = req.body;
+    const updatedCartItem = await CartItem.update(
+      { Item_id, Count },
+      { where: { id: cartItemId } }
+    );
+    res.status(200).json(updatedCartItem);
+  } catch (err) {
+    res.status(500).json({ error: 'Error updating the cart item' });
+  }
+};
+
+// Delete a cart item by ID
+const deleteCartItem = async (req, res) => {
+  try {
+    const cartItemId = req.params.id;
+    await CartItem.destroy({ where: { id: cartItemId } });
+    res.status(204).end(); // 204 No Content - Successfully deleted
+  } catch (err) {
+    res.status(500).json({ error: 'Error deleting the cart item' });
+  }
+};
+
 module.exports = {
-  createCart,
-  getAllCarts,
-  getCartById,
-  updateCart,
+  getCartByUserId,
   deleteCart,
+  createCartItem,
+  updateCartItem,
+  deleteCartItem,
 };

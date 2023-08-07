@@ -24,6 +24,10 @@ const Item = sequelize.define('Item', {
     type: DataTypes.FLOAT,
     allowNull: false,
   },
+  qty:{
+    type:DataTypes.INTEGER,
+    defaultValue:0
+  }
 });
 
 Item.belongsTo(Category, { foreignKey: 'category_id' });
