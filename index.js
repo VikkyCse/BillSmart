@@ -8,7 +8,6 @@ const cartRoutes = require('./router/cartRoutes');
 const cartItemRoutes = require('./router/cartItemRoutes');
 const couponRoutes = require('./router/couponRoutes');
 const naturalsRoutes = require('./router/naturalsRoutes');
-const orderItem = require('./models/orderItem')
 app = express();
 
 app.use(express.json());
