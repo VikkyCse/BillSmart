@@ -1,15 +1,49 @@
 const Transaction = require('../models/Transaction');
-
+const order = require('../models/Order');
+const orderItem = require('../models/OrderItem');
+const Order = require('../models/Order');
+const User = require('../models/User');
+const Cart = require('../models/Cart');
+const CartItem = require('../models/Cart_Items');
 // Create a new transaction
 const createTransaction = async (req, res) => {
   try {
-    const { Amount, Transaction_Time, Is_completed, user_id, coupon_id, cart_item_id, Type } = req.body;
-    const transaction = await Transaction.create({ Amount, Transaction_Time, Is_completed, user_id, coupon_id, cart_item_id, Type });
+    const { Amount, Transaction_Time, Is_completed, user_id, coupon_id, Type } = req.body;
+    const user = await User.findByPk(user_id); // Use findByPk instead of find to get a single user by primary key
+    const order = await Order.create();
+    const cart = await Cart.findOne({ where: { userId: user.id } }); // Use findOne instead of find to get a single cart
+    const cartItems = await CartItem.findAll({ where: { cartId: cart.id } }); // Use findAll to get all cart items
+
+    // Create an array to hold the promises for creating OrderItems
+    const orderItemPromises = [];
+
+    // Loop through each cart item and create the corresponding OrderItem
+    for (const cartItem of cartItems) {
+      const { Item_id, Count } = cartItem;
+      // Create OrderItem with the corresponding values and orderId as foreign key
+      orderItemPromises.push(OrderItem.create({ Item_id, Count, orderId: order.id }));
+    }
+
+    // Execute all the OrderItem create promises in parallel
+    await Promise.all(orderItemPromises);
+
+    // Create the Transaction record with the orderId from the newly created order
+    const transaction = await Transaction.create({
+      Amount,
+      Transaction_Time,
+      Is_completed,
+      user_id,
+      coupon_id,
+      orderId: order.id, // Set the orderId to the id of the newly created order
+      Type,
+    });
+
     res.status(201).json(transaction);
   } catch (err) {
     res.status(500).json({ error: 'Error creating the transaction' });
   }
 };
+
 
 // Read all transactions
 const getAllTransactions = async (req, res) => {

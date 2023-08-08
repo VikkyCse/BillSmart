@@ -45,6 +45,10 @@ const deleteCart = async (req, res) => {
 const createCartItem = async (req, res) => {
   try {
     const { Item_id, Count, user_id } = req.body;
+    const cart = await Cart.findOne({ where: { user_id: user_id } });
+    if(!cart){
+      const Cart = await Cart.create({ user_id });
+    }
     const cartItem = await CartItem.create({ Item_id, Count, user_id });
     res.status(201).json(cartItem);
   } catch (err) {

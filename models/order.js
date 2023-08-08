@@ -9,12 +9,8 @@ const Order = sequelize.define('Order', {
     primaryKey: true,
     autoIncrement: true,
   },
-  Quantity: {
-    type: DataTypes.INTEGER,
-  },
 });
 
-Order.belongsTo(Transaction, { foreignKey: 'order_id' });
-Order.belongsTo(Item, { foreignKey: 'Product_id' });
-
+Order.hasMany(Transaction, { foreignKey: 'orderId' });
+Order.hasMany(Item, { foreignKey: 'orderId' });
 module.exports = Order;

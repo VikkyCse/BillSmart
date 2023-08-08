@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('./database');
 const User = require('./User');
 const Coupon = require('./Coupon');
-const CartItem = require('./Cart_Items');
+const Order = require('./Order');
 
 const Transaction = sequelize.define('Transaction', {
   id: {
@@ -28,6 +28,6 @@ const Transaction = sequelize.define('Transaction', {
 
 Transaction.belongsTo(User, { foreignKey: 'user_id' });
 Transaction.belongsTo(Coupon, { foreignKey: 'coupon_id' });
-Transaction.belongsTo(CartItem, { foreignKey: 'cart_item_id' });
-
+// Transaction.belongsTo(Order);
+// Order.hasOne(Transaction)
 module.exports = Transaction;
