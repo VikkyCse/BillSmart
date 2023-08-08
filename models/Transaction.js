@@ -28,6 +28,6 @@ const Transaction = sequelize.define('Transaction', {
 
 Transaction.belongsTo(User, { foreignKey: 'user_id' });
 Transaction.belongsTo(Coupon, { foreignKey: 'coupon_id' });
-Transaction.belongsTo(Order);
-Order.hasOne(Transaction)
+// Transaction.belongsTo(Order);
+// Order.hasOne(Transaction)
 module.exports = Transaction;
