@@ -1,6 +1,7 @@
 const Cart = require('../models/Cart');
 const CartItem = require('../models/Cart_Items');
 const Item = require('../models/Item');
+const sequelize = require('sequelize');
 
 // Read a specific cart by user ID
 const getCartByUserId = async (req, res) => {
@@ -43,16 +44,30 @@ const deleteCart = async (req, res) => {
 
 // Create a cart item
 const createCartItem = async (req, res) => {
+  const t = await sequelize.transaction();
   try {
+    
+
     const { Item_id, Count, user_id } = req.body;
     const cart = await Cart.findOne({ where: { user_id: user_id } });
+    const item = await Item.findByPk(Item_id)
+    if(item.Count < Count){
+      res.send(json({ message:'Invalid Count'}))
+      return
+    }
+
     if(!cart){
       const Cart = await Cart.create({ user_id });
     }
     const cartItem = await CartItem.create({ Item_id, Count, user_id });
+    item.count -= Count
+    await item.save()
+
+    await t.commit();
     res.status(201).json(cartItem);
   } catch (err) {
     res.status(500).json({ error: 'Error creating the cart item' });
+    await t.rollback();
   }
 };
 

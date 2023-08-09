@@ -12,5 +12,5 @@ const Order = sequelize.define('Order', {
 });
 
 Order.hasMany(Transaction, { foreignKey: 'orderId' });
-Order.hasMany(Item, { foreignKey: 'orderId' });
+// Order.hasMany(Item, { foreignKey: 'orderId' });
 module.exports = Order;
