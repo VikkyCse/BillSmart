@@ -2,7 +2,7 @@ const Sequlize = require('sequelize')
 
 
 
-const sequelize = new Sequlize("billsmart", "root", "sowrajr!o", {
+const sequelize = new Sequlize("billsmart", "root", "12345", {
     dialect: "mysql",
     logging: false
 })

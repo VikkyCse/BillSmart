@@ -24,6 +24,8 @@ app.use('/categories',categoryRoutes)
 // app.use('/cartitems', cartItemRoutes);
 app.use('/coupons', couponRoutes);
 app.use('/naturals', naturalsRoutes);
+// static images folder
+app.use('/Images',express.static('./Images'))
 
 
 const PORT = 8000;

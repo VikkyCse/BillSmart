@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes,Sequelize } = require('sequelize');
 const sequelize = require('./database');
 
 const Shop = sequelize.define('Shop', {
@@ -13,7 +13,7 @@ const Shop = sequelize.define('Shop', {
     allowNull: false,
   },
   image: {
-    type: DataTypes.BLOB,
+    type: DataTypes.STRING,
     allowNull: true,
   },
 });
