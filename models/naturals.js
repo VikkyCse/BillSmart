@@ -7,7 +7,7 @@ const Naturals = sequelize.define('Naturals', {
     type: DataTypes.UUID,
     defaultValue: Sequelize.UUIDV4,
     primaryKey:true,
-    autoIncrement: true,
+   // autoIncrement: true,
   },
   time: {
     type: DataTypes.DATE,
