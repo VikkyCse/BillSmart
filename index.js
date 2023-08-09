@@ -1,5 +1,6 @@
 const sequelize = require('./models/database');
 const express = require('express');
+const multer=require('multer');
 const userRoutes = require('./router/userRoutes');
 const itemRoutes = require('./router/itemRoutes');
 const shopRoutes = require('./router/shopRoutes');
@@ -31,6 +32,6 @@ app.use('/Images',express.static('./Images'))
 const PORT = 8000;
 app.listen(PORT, async () => {
   console.log(`Server running on http://localhost:${PORT}`);
-  await sequelize.authenticate()// alter - force
+  await sequelize.sync({force:true})// alter - force
   console.log("Database synced");
 });

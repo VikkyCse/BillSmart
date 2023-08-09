@@ -7,12 +7,15 @@ const createShop = async (req, res) => {
   try {
     //  const { name} = req.body;
     // const {image}=req.file.path;
-    let
+    let info={
+      image:req.file.path,
+      name:req.body.name
+    }
 
-    const shop = await Shop.create({ name, image });
+    const shop = await Shop.create( info );
     res.status(201).json(shop);
   } catch (err) {
-    res.status(500).json({ error: 'Error creating the shop' });
+    res.status(500).json({ error: 'Error creating the shop' , err});
   }
 };
 
@@ -77,9 +80,10 @@ const storage=multer.diskStorage({
 })
 const upload=multer({
   storage:storage,
-  limits:{fileSize:'1000000'},
+  // limits:{fileSize:'1000000'},
   fileFilter:(req,file,cb) => {
-    const fileTypes = /jpeg | JPG | png | gif/
+    // const fileTypes = /jpeg | JPG | png | gif/
+    const fileTypes = /jpeg|JPG|png|gif/i;
     const mimType=fileTypes.test(file.mimetype) //checking the file format
     const extname=fileTypes.test(path.extname(file.originalname))
 
