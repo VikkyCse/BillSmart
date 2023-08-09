@@ -4,8 +4,9 @@ const User = require('./User');
 
 const Coupon = sequelize.define('Coupon', {
   id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
+    type: DataTypes.UUID,
+    defaultValue: Sequelize.UUIDV4,
+    primaryKey:true,
     autoIncrement: true,
     unique: true,
   },

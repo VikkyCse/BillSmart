@@ -3,7 +3,8 @@ const sequelize = require('./database');
 
 const Category = sequelize.define('Category', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
+    defaultValue: Sequelize.UUIDV4,
     primaryKey: true,
     autoIncrement: true,
   },

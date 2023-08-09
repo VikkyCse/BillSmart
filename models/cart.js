@@ -4,7 +4,8 @@ const User = require('./User');
 
 const Cart = sequlize.define('Cart', {
     id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
         autoIncrement: true,
     }
