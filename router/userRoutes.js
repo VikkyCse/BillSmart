@@ -17,7 +17,6 @@ router.post(
   );
 
 
-
 router.get('/login', userController.loginUser);
 
 // Read all users

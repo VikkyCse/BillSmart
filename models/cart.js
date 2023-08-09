@@ -7,7 +7,7 @@ const Cart = sequlize.define('Cart', {
         type: DataTypes.UUID,
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
-        autoIncrement: true,
+       // autoIncrement: true,
     }
 });
 Cart.belongsTo(User,{ foreignKey: 'user_id' })

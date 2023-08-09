@@ -6,7 +6,7 @@ const Shop = sequelize.define('Shop', {
     type: DataTypes.UUID,
     defaultValue: Sequelize.UUIDV4,
     primaryKey: true,
-    autoIncrement: true,
+   // autoIncrement: true,
   },
   name: {
     type: DataTypes.STRING,
