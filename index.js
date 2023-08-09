@@ -31,6 +31,6 @@ app.use('/Images',express.static('./Images'))
 const PORT = 8000;
 app.listen(PORT, async () => {
   console.log(`Server running on http://localhost:${PORT}`);
-  await sequelize.sync({force:true})// alter - force
+  await sequelize.sync({alter:true})/// alter - force
   console.log("Database synced");
 });
