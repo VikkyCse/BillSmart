@@ -1,12 +1,13 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes,Sequelize } = require('sequelize');
 const sequelize = require('./database');
 const User = require('./User');
 
 const Coupon = sequelize.define('Coupon', {
   id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
+    type: DataTypes.UUID,
+    defaultValue: Sequelize.UUIDV4,
+    primaryKey:true,
+    //autoIncrement: true,
     unique: true,
   },
   coupon_name: {

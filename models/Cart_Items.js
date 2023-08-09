@@ -1,13 +1,14 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes , Sequelize } = require('sequelize');
 const sequelize = require('./database');
 const Item = require('./Item');
 const Cart = require('./Cart');
 
 const CartItem = sequelize.define('Cart_Item', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
+    defaultValue: Sequelize.UUIDV4,
     primaryKey: true,
-    autoIncrement: true,
+   // autoIncrement: true,
   },
   Count: {
     type: DataTypes.INTEGER,

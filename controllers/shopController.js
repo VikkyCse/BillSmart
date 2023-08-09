@@ -1,13 +1,21 @@
 const Shop = require('../models/shop');
+const multer=require('multer')
+const path=require('path')
 
 // Create a new shop
 const createShop = async (req, res) => {
   try {
-    const { name, image } = req.body;
-    const shop = await Shop.create({ name, image });
+    //  const { name} = req.body;
+    // const {image}=req.file.path;
+    let info={
+      image:req.file.path,
+      name:req.body.name
+    }
+
+    const shop = await Shop.create( info );
     res.status(201).json(shop);
   } catch (err) {
-    res.status(500).json({ error: 'Error creating the shop' });
+    res.status(500).json({ error: 'Error creating the shop' , err});
   }
 };
 
@@ -60,6 +68,32 @@ const deleteShop = async (req, res) => {
     res.status(500).json({ error: 'Error deleting the shop' });
   }
 };
+// upload image 
+const storage=multer.diskStorage({
+  destination:(req,file,cb) =>{
+    cb(null,'Images')  //file name should be unique so we are using Date.now(), 2/1/23.png
+
+  },
+  filename:(req,file,cb) => {
+    cb(null,Date.now() + path.extname(file.originalname))
+  }
+})
+const upload=multer({
+  storage:storage,
+  // limits:{fileSize:'1000000'},
+  fileFilter:(req,file,cb) => {
+    // const fileTypes = /jpeg | JPG | png | gif/
+    const fileTypes = /jpeg|JPG|png|gif/i;
+    const mimType=fileTypes.test(file.mimetype) //checking the file format
+    const extname=fileTypes.test(path.extname(file.originalname))
+
+    if(mimType && extname) {
+      return cb(null,true)
+    }
+    cb('Give proper file format to upload')
+
+  }
+}).single('image')
 
 module.exports = {
   createShop,
@@ -67,4 +101,5 @@ module.exports = {
   getShopById,
   updateShop,
   deleteShop,
+  upload
 };

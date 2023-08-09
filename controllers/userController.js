@@ -1,12 +1,8 @@
 const User = require('../models/User');
-// const bcrypt = require('bcryptjs');
-// const jwt = require('jsonwebtoken');
-// const dotenv = require('dotenv');
+
 const { validationResult } = require('express-validator');
 
-// dotenv.config();
 
-// const secretKey = "mysecretpassword123";
 
 // Create a new user
 const createUser = async (req, res) => {
@@ -15,7 +11,7 @@ const createUser = async (req, res) => {
     const user = await User.create({ User_name, rfid, name, amount, usertype, gender, isHosteller, natural_amt, rollNo, password });
     res.status(200).json(user);
   } catch (err) {
-    res.status(500).json({ error: 'Error creating the user' });
+    res.status(500).json({ error: 'Error creating the user' ,err});
   }
 };
 
@@ -69,32 +65,7 @@ const deleteUser = async (req, res) => {
   }
 };
 
-// User registration
-const registerUser = async (req, res) => {
-  const errors = validationResult(req);
 
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  const { name, rfid, User_name, password, usertype, gender, isHosteller, rollNo } = req.body;
-
-  try {
-    const existingUser = await User.findOne({ where: { User_name } });
-
-    if (existingUser) {
-      return res.status(400).json({ message: 'Username already exists' });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    await User.create({ name, rfid, User_name, password: hashedPassword, usertype, gender, isHosteller, rollNo });
-
-    return res.status(201).json({ message: 'User registered successfully' });
-  } catch (error) {
-    return res.status(500).json({ message: 'Internal server error' });
-  }
-};
 
 // User login
 const loginUser = async (req, res) => {
@@ -113,9 +84,6 @@ const loginUser = async (req, res) => {
       }
     }
 
-    // const token = jwt.sign({ id: user.id, User_name: user.User_name }, secretKey, {
-    //   expiresIn: '1h',
-    // });
 
     return res.json({ message : true });
   } catch (error) {
@@ -129,6 +97,5 @@ module.exports = {
   createUser,
   updateUser,
   deleteUser,
-  registerUser,
   loginUser,
 };

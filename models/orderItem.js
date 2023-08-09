@@ -1,13 +1,14 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes,Sequelize } = require('sequelize');
 const sequelize = require('./database');
 const Item = require('./Item');
-const Order = require('./Order');
+const Order = require('./order');
 
 const OrderItem = sequelize.define('OrderItem', {
     id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
-        autoIncrement: true,
+       // autoIncrement: true,
     },
     qty: {
         type: DataTypes.INTEGER,

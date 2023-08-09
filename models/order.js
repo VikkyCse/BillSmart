@@ -1,16 +1,17 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes,Sequelize } = require('sequelize');
 const sequelize = require('./database');
 const Transaction = require('./Transaction');
 const Item = require('./Item');
 
 const Order = sequelize.define('Order', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
+    defaultValue: Sequelize.UUIDV4,
     primaryKey: true,
-    autoIncrement: true,
+   // autoIncrement: true,
   },
 });
 
-Order.hasMany(Transaction, { foreignKey: 'orderId' });
-Order.hasMany(Item, { foreignKey: 'orderId' });
+// Order.hasMany(Transaction, { foreignKey: 'orderId' });
+// Order.hasMany(Item, { foreignKey: 'orderId' });
 module.exports = Order;

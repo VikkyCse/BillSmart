@@ -1,14 +1,15 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes,Sequelize } = require('sequelize');
 const sequelize = require('./database');
 const User = require('./User');
-const Coupon = require('./Coupon');
-const Order = require('./Order');
+const Coupon = require('./coupon');
+const Order = require('./order');
 
 const Transaction = sequelize.define('Transaction', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
+    defaultValue: Sequelize.UUIDV4,
     primaryKey: true,
-    autoIncrement: true,
+    //autoIncrement: true,
     unique: true,
   },
   Amount: {
@@ -27,7 +28,6 @@ const Transaction = sequelize.define('Transaction', {
 });
 
 Transaction.belongsTo(User, { foreignKey: 'user_id' });
-Transaction.belongsTo(Coupon, { foreignKey: 'coupon_id' });
-// Transaction.belongsTo(Order);
-// Order.hasOne(Transaction)
+Transaction.belongsTo(Coupon, { foreignKey: 'coupon_id' })
+ //Order.hasOne(Transaction)
 module.exports = Transaction;

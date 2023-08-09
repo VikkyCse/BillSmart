@@ -1,10 +1,16 @@
 const Category = require('../models/Category');
+const Shop = require('../models/shop');
 
 // Create a new category
 const createCategory = async (req, res) => {
   try {
-    const { name } = req.body;
-    const category = await Category.create({ name });
+    const { name, Shopname } = req.body;
+    const shop = await Shop.findOne({where:{name:Shopname}})
+    if(!shop){
+      res.send(JSON.stringify({"messsage":"shop not found"}))
+      return
+    }
+    const category = await Category.create({ name,Shop_id:shop.id });
     res.status(201).json(category);
   } catch (err) {
     res.status(500).json({ error: 'Error creating the category' });

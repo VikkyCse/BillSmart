@@ -1,0 +1,116 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "BillSmart",
+    "dateExported": "2023-08-08T10:38:11.167Z",
+    "version": "1.1",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "c3fd5fb8-469b-4cfa-ae89-1c6875ec87b6",
+            "colId": "004ac4cf-c91f-4c69-873e-f9307a8f85e5",
+            "containerId": "",
+            "name": "user creation",
+            "url": "http://localhost:8000/users/create",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2023-08-08T09:27:30.285Z",
+            "modified": "2023-08-08T09:30:37.673Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"User_name\": \"vijay2\",\n  \"rfid\": 23563356,\n  \"name\": \"vj\",\n  \"amount\": 120,\n  \"usertype\": 1,\n  \"gender\": true,\n  \"isHosteller\": true,\n  \"natural_amt\": 123,\n  \"rollNo\": \"21cs1dd79\",\n  \"password\":123\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "59a982f8-d1a8-4048-b75c-93ca867c5606",
+            "colId": "004ac4cf-c91f-4c69-873e-f9307a8f85e5",
+            "containerId": "",
+            "name": "create categotry",
+            "url": "http://localhost:8000/categories",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2023-08-08T09:32:28.554Z",
+            "modified": "2023-08-08T09:50:36.693Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"cone\",\n  \"Shopname\":\"ice cream\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "e34f677f-f710-4d71-92fa-fefb54ba6f99",
+            "colId": "004ac4cf-c91f-4c69-873e-f9307a8f85e5",
+            "containerId": "",
+            "name": "create shop",
+            "url": "http://localhost:8000/shops/",
+            "method": "POST",
+            "sortNum": 30000,
+            "created": "2023-08-08T09:33:34.128Z",
+            "modified": "2023-08-08T09:50:33.520Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"ice cream\",\n  \"image\": \"dfdsff\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "d7041c63-dff9-4437-9cc7-9e11ceede62d",
+            "colId": "004ac4cf-c91f-4c69-873e-f9307a8f85e5",
+            "containerId": "",
+            "name": "create item",
+            "url": "http://localhost:8000/item/",
+            "method": "POST",
+            "sortNum": 40000,
+            "created": "2023-08-08T09:53:29.111Z",
+            "modified": "2023-08-08T10:03:09.142Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"jollytrain\",\n  \"categoryname\": \"cone\",\n  \"veg\": 1,\n  \"price\": 201,\n  \"quantity\": 2222\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "32985bdf-b373-4352-98ae-986cfd864d58",
+            "colId": "004ac4cf-c91f-4c69-873e-f9307a8f85e5",
+            "containerId": "",
+            "name": "addcart",
+            "url": "",
+            "method": "GET",
+            "sortNum": 50000,
+            "created": "2023-08-08T10:06:51.267Z",
+            "modified": "2023-08-08T10:06:51.267Z",
+            "headers": []
+        },
+        {
+            "_id": "34373f2d-a1d2-4576-bbdd-f647cdf9f4b6",
+            "colId": "004ac4cf-c91f-4c69-873e-f9307a8f85e5",
+            "containerId": "",
+            "name": "Create Cart ",
+            "url": "http://localhost:8000/cart/4",
+            "method": "POST",
+            "sortNum": 60000,
+            "created": "2023-08-08T10:27:51.665Z",
+            "modified": "2023-08-08T10:35:42.507Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"item_id\": 2,\n  \"Count\": 2,\n  \"user_id\": 4\n}",
+                "form": []
+            },
+            "tests": []
+        }
+    ]
+}
