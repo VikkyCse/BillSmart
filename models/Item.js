@@ -4,8 +4,9 @@ const Category = require('./Category');
 
 const Item = sequelize.define('Item', {
   id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
+    type: DataTypes.UUID,
+    defaultValue: Sequelize.UUIDV4,
+    primaryKey:true,
     autoIncrement: true,
   },
   name: {

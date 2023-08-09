@@ -3,7 +3,8 @@ const sequlize = require('./database');
 
 const TransactionType = sequlize.define('TransactionType', {
     id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
         autoIncrement: true,
     },

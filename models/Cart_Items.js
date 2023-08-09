@@ -5,7 +5,8 @@ const Cart = require('./Cart');
 
 const CartItem = sequelize.define('Cart_Item', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
+    defaultValue: Sequelize.UUIDV4,
     primaryKey: true,
     autoIncrement: true,
   },

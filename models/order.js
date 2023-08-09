@@ -5,7 +5,8 @@ const Item = require('./Item');
 
 const Order = sequelize.define('Order', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
+    defaultValue: Sequelize.UUIDV4,
     primaryKey: true,
     autoIncrement: true,
   },

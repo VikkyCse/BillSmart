@@ -4,7 +4,8 @@ const Shop = require('./shop');
 
 const Category = sequelize.define('Category', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
+    defaultValue: Sequelize.UUIDV4,
     primaryKey: true,
     autoIncrement: true,
   },
