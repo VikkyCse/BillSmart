@@ -1,5 +1,7 @@
 const Category = require('../models/Category');
 const Shop = require('../models/shop');
+const multer=require('multer');
+const path=require('path');
 
 // Create a new category
 const createCategory = async (req, res) => {
@@ -66,6 +68,33 @@ const deleteCategory = async (req, res) => {
     res.status(500).json({ error: 'Error deleting the category' });
   }
 };
+// upload image 
+const storage=multer.diskStorage({
+  destination:(req,file,cb) =>{
+    cb(null,'Images')  //file name should be unique so we are using Date.now(), 2/1/23.png
+
+  },
+  filename:(req,file,cb) => {
+    cb(null,Date.now() + path.extname(file.originalname))
+  }
+})
+const Upload=multer({
+  storage:storage,
+  // limits:{fileSize:'1000000'},
+  fileFilter:(req,file,cb) => {
+    // const fileTypes = /jpeg | JPG | png | gif/
+    const fileTypes = /JPEG|jpg|png|gif/i;
+    const mimType=fileTypes.test(file.mimetype) //checking the file format
+    const extname=fileTypes.test(path.extname(file.originalname))
+
+    if(mimType && extname) {
+      return cb(null,true)
+    }
+    cb('Give proper file format to upload')
+
+  }
+}).single('image')
+
 
 module.exports = {
   createCategory,
@@ -73,4 +102,5 @@ module.exports = {
   getCategoryById,
   updateCategory,
   deleteCategory,
+  Upload,
 };

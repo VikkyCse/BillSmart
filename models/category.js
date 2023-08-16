@@ -13,6 +13,10 @@ const Category = sequelize.define('Category', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  image: {
+    type:DataTypes.STRING,
+    allowNull:true,
+  }
 });
 Category.belongsTo(Shop,{ foreignKey: 'Shop_id' })
 module.exports = Category;

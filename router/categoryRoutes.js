@@ -4,7 +4,8 @@ const categoryController = require('../controllers/categoryController');
 // const isAdmin = require('../middleware/authorization').isAdmin;
 // const isUser = require('../middleware/authorization').isUser;
 // Create a new category
-router.post('/', categoryController.createCategory);
+router.post('/', categoryController.Upload, categoryController.createCategory);
+// router.post('/', categoryController.createCategory);
 
 // Read all categories
 router.get('/', categoryController.getAllCategories);
