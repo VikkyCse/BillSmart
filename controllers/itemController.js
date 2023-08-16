@@ -20,7 +20,7 @@ const createItem = async (req, res) => {
       veg:req.body.veg,
       image:req.file.path,
       price:req.body.price,
-      category_name: category,
+      category_id: category.id,
       quantity:req.body.quantity
     }
     const item = await Item.create(info1);
@@ -94,7 +94,7 @@ const imgupload=multer({
   // limits:{fileSize:'1000000'},
   fileFilter:(req,file,cb) => {
     // const fileTypes = /jpeg | JPG | png | gif/
-    const fileTypes = /JPEG|jpg|png|gif/i;
+    const fileTypes = /JPEG|jpg|png|gif|JPG/i;
     const mimType=fileTypes.test(file.mimetype) //checking the file format
     const extname=fileTypes.test(path.extname(file.originalname))
 
