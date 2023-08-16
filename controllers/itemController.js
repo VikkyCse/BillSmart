@@ -1,21 +1,32 @@
 const Category = require('../models/Category');
 const Item = require('../models/Item');
+const multer=require('multer')
+const path=require('path')
 
 // Create a new item
 const createItem = async (req, res) => {
   try {
-    const { name, veg, image, price, categoryname ,quantity} = req.body;
-    const category = await Category.findOne({where: { name:categoryname}})
+   
+    // const { name, veg, image, price, categoryname ,quantity} = req.body;
+    const category = await Category.findOne({where: { name:req.body.categoryname}})
 
   console.log(category)
     if(!category){
       res.status(200).json({error : 'category not found'})
       return
     }
-    const item = await Item.create({ name, veg, image, price, category_id:category.id ,qty:quantity});
-    res.status(201).json(item);
+    let info1={
+      name:req.body.name,
+      veg:req.body.veg,
+      image:req.file.path,
+      price:req.body.price,
+      category_name: category,
+      quantity:req.body.quantity
+    }
+    const item = await Item.create(info1);
+    res.status(201).send(item);
   } catch (err) {
-    res.status(500).json({ error: 'Error creating the item' });
+    res.status(500).json({ error: 'Error creating the item',err});
   }
 };
 
@@ -68,6 +79,32 @@ const deleteItem = async (req, res) => {
     res.status(500).json({ error: 'Error deleting the item' });
   }
 };
+// upload image 
+const storage=multer.diskStorage({
+  destination:(req,file,cb) =>{
+    cb(null,'Images')  //file name should be unique so we are using Date.now(), 2/1/23.png
+
+  },
+  filename:(req,file,cb) => {
+    cb(null,Date.now() + path.extname(file.originalname))
+  }
+})
+const imgupload=multer({
+  storage:storage,
+  // limits:{fileSize:'1000000'},
+  fileFilter:(req,file,cb) => {
+    // const fileTypes = /jpeg | JPG | png | gif/
+    const fileTypes = /JPEG|jpg|png|gif/i;
+    const mimType=fileTypes.test(file.mimetype) //checking the file format
+    const extname=fileTypes.test(path.extname(file.originalname))
+
+    if(mimType && extname) {
+      return cb(null,true)
+    }
+    cb('Give proper file format to upload')
+
+  }
+}).single('image')
 
 module.exports = {
   createItem,
@@ -75,4 +112,5 @@ module.exports = {
   getItemById,
   updateItem,
   deleteItem,
+  imgupload
 };

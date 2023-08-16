@@ -1,5 +1,6 @@
 const sequelize = require('./models/database');
 const express = require('express');
+const bodyParser = require('body-parser')
 const multer=require('multer');
 const userRoutes = require('./router/userRoutes');
 const itemRoutes = require('./router/itemRoutes');
@@ -14,7 +15,7 @@ const categoryRoutes = require('./router/categoryRoutes')
 app = express();
 
 app.use(express.json());
-
+app.use(bodyParser.text({ type: '/' }));
 // Routes for each model
 app.use('/users', userRoutes);
 app.use('/item', itemRoutes);
@@ -32,6 +33,6 @@ app.use('/Images',express.static('./Images'))
 const PORT = 8000;
 app.listen(PORT, async () => {
   console.log(`Server running on http://localhost:${PORT}`);
-  await sequelize.sync({force:true})// alter - force
+  await sequelize.sync({alter:true})// alter - force
   console.log("Database synced");
 });

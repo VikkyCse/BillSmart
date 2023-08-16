@@ -1,6 +1,7 @@
 const Shop = require('../models/shop');
 const multer=require('multer')
-const path=require('path')
+const path=require('path');
+const { urlToHttpOptions } = require('url');
 
 // Create a new shop
 const createShop = async (req, res) => {
@@ -10,10 +11,11 @@ const createShop = async (req, res) => {
     let info={
       image:req.file.path,
       name:req.body.name
-    }
+    } 
 
     const shop = await Shop.create( info );
     res.status(201).json(shop);
+  
   } catch (err) {
     res.status(500).json({ error: 'Error creating the shop' , err});
   }

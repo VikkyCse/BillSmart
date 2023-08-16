@@ -18,14 +18,14 @@ const Item = sequelize.define('Item', {
     defaultValue: true,
   },
   image: {
-    type: DataTypes.BLOB,
+    type: DataTypes.STRING,
     allowNull: true,
   },
   price: {
     type: DataTypes.FLOAT,
     allowNull: false,
   },
-  qty:{
+  quantity:{
     type:DataTypes.INTEGER,
     defaultValue:0
   }
