@@ -4,7 +4,9 @@ const shopController = require('../controllers/shopController');
 // const isAdmin = require('../middleware/authorization').isAdmin;
 // const isUser = require('../middleware/authorization').isUser;
 // Create a new shop
-router.post('/',shopController.upload, shopController.createShop);
+// router.post('/',shopController.upload, shopController.createShop);
+router.post('/create-shop', shopController.upload, shopController.createShop);
+
 
 // Read all shops
 router.get('/', shopController.getAllShops);

@@ -1,5 +1,6 @@
 const sequelize = require('./models/database');
 const express = require('express');
+const multer=require('multer');
 const userRoutes = require('./router/userRoutes');
 const itemRoutes = require('./router/itemRoutes');
 const shopRoutes = require('./router/shopRoutes');
