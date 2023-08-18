@@ -10,7 +10,7 @@ const OrderItem = sequelize.define('OrderItem', {
         primaryKey: true, 
        // autoIncrement: true,
     },
-    qty: {
+    Quantity: {
         type: DataTypes.INTEGER,
     },
 });

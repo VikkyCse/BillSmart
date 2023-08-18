@@ -1,7 +1,7 @@
 const { DataTypes,Sequelize } = require('sequelize');
 const sequelize = require('./database');
 const User = require('./User');
-const Coupon = require('./coupon');
+const Coupon = require('./Coupon');
 const Order = require('./Order');
 
 const Transaction = sequelize.define('Transaction', {
@@ -25,10 +25,11 @@ const Transaction = sequelize.define('Transaction', {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
-  order_id:{
+  order_id: {
     type: DataTypes.UUID,
-
   }
+  
+  
 });
 
 Transaction.belongsTo(User, { foreignKey: 'user_id' });

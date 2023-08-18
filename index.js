@@ -5,13 +5,14 @@ const multer=require('multer');
 const userRoutes = require('./router/userRoutes');
 const itemRoutes = require('./router/itemRoutes');
 const shopRoutes = require('./router/shopRoutes');
-const orderRoutes = require('./router/orderRoutes');
+// const orderRoutes = require('./router/orderRoutes');
 const cartRoutes = require('./router/cartRoutes');
 // const cartItemRoutes = require('./router/cartItemRoutes');
 const couponRoutes = require('./router/couponRoutes');
 const naturalsRoutes = require('./router/naturalsRoutes');
 const categoryRoutes = require('./router/categoryRoutes');
 const Order = require('./models/Order');
+const transactionRoutes=require('./router/transactionRoutes');
 
 // const orderItem = require('./models/orderItem')
 app = express();
@@ -22,12 +23,13 @@ app.use(bodyParser.text({ type: '/' }));
 app.use('/users', userRoutes);
 app.use('/item', itemRoutes);
 app.use('/shops', shopRoutes);
-app.use('/orders', orderRoutes);
+// app.use('/orders', orderRoutes);
 app.use('/cart', cartRoutes);
 app.use('/categories',categoryRoutes)
 // app.use('/cartitems', cartItemRoutes);
 app.use('/coupons', couponRoutes);
 app.use('/naturals', naturalsRoutes);
+app.use('/transaction',transactionRoutes);
 // static images folder
 app.use('/Images',express.static('./Images'))
 

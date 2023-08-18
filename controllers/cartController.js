@@ -21,9 +21,17 @@ const getCartByUserId = async (req, res) => {
         where: { Cart_id: cart.id },
         include: [Item],
       });
+
+       
+      let totalAmount = 0;
+      cartItems.forEach((cartItem) => {
+        totalAmount += cartItem.Item.price * cartItem.count;
+      });
+
       res.status(200).json({
         cart,
         items: cartItems,
+        totalAmount,
       });
     }
   } catch (err) {
@@ -83,24 +91,80 @@ const createCartItem = async (req, res) => {
   }
 };
 
+
+
+// const updateCartItem = async (req, res) => {
+//   const t = await sequelize.transaction();
+
+//   try {
+//     const cartItemId = req.params.id;
+//     const { Count } = req.body;
+
+//     const cartItem = await CartItem.findByPk(cartItemId);
+
+//     if (!cartItem) {
+//       res.status(404).json({ error: 'Cart item not found' });
+//       return;
+//     }
+
+//     const item = await Item.findByPk(cartItem.Item_id);
+
+//     if (!item) {
+//       res.status(404).json({ error: 'Associated item not found' });
+//       return;
+//     }
+
+//     const previousCount = cartItem.Count;
+//     const countChange = Count - previousCount;
+
+//     if (item.quantity < Math.abs(countChange) && countChange > 0) {
+//       res.status(400).json({ error: 'Requested count exceeds available quantity' });
+//       return;
+//     }
+
+//     console.log('Before Update - Item Quantity:', item.quantity);
+
+//     await CartItem.update(
+//       { Count },
+//       { where: { id: cartItemId } }
+//     );
+//     await item.reload();
+
+//     await Item.update(
+//       { quantity: item.quantity - countChange },
+//       { where: { id: item.id } }
+//     );
+
+//      console.log('After Update - Item Quantity:', item.quantity);
+
+//     await t.commit();
+//     // console.log('After Update - Item Quantity:', item.quantity);
+
+//     res.status(200).json({ message: 'Cart item updated successfully' });
+//   } catch (err) {
+//     await t.rollback();
+//     res.status(500).json({ error: 'Error updating the cart item' });
+//   }
+// };
+
 const updateCartItem = async (req, res) => {
   const t = await sequelize.transaction();
-  
+
   try {
     const cartItemId = req.params.id;
     const { Count } = req.body;
 
     const cartItem = await CartItem.findByPk(cartItemId);
-    
+
     if (!cartItem) {
-      res.status(404).json({ error: ERR_CART_ITEM_NOT_FOUND });
+      res.status(404).json({ error: 'Cart item not found' });
       return;
     }
 
     const item = await Item.findByPk(cartItem.Item_id);
 
     if (!item) {
-      res.status(404).json({ error: ERR_ITEM_NOT_FOUND });
+      res.status(404).json({ error: 'Associated item not found' });
       return;
     }
 
@@ -108,19 +172,30 @@ const updateCartItem = async (req, res) => {
     const countChange = Count - previousCount;
 
     if (item.quantity < Math.abs(countChange) && countChange > 0) {
-      res.status(400).json({ error: ERR_REQUESTED_COUNT_EXCEEDS_QUANTITY });
+      res.status(400).json({ error: 'Requested count exceeds available quantity' });
       return;
     }
+
+    console.log('Before Update - Item Quantity:', item.quantity);
 
     await CartItem.update(
       { Count },
       { where: { id: cartItemId } }
     );
 
+    // Reload the item from the database
+    await item.reload();
+
+    // Calculate the new quantity
+    const newQuantity = item.quantity - countChange;
+
+    // Update the item quantity in the database
     await Item.update(
-      { quantity: item.quantity - countChange },
+      { quantity: newQuantity },
       { where: { id: item.id } }
     );
+
+    console.log('After Update - Item Quantity:', newQuantity);
 
     await t.commit();
 
@@ -130,6 +205,12 @@ const updateCartItem = async (req, res) => {
     res.status(500).json({ error: 'Error updating the cart item' });
   }
 };
+
+
+
+
+
+
 
 const deleteCartItem = async (req, res) => {
   try {
