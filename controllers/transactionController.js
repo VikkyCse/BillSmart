@@ -34,7 +34,7 @@ const createTransaction = async (req, res) => {
       Is_completed,
       user_id,
       coupon_id,
-      orderId: order.id, // Set the orderId to the id of the newly created order
+      order_id: order.id, // Set the orderId to the id of the newly created order
       Type,
     });
 
