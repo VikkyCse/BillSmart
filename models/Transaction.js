@@ -25,9 +25,14 @@ const Transaction = sequelize.define('Transaction', {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
+  order_id:{
+    type: DataTypes.UUID,
+
+  }
 });
 
 Transaction.belongsTo(User, { foreignKey: 'user_id' });
 Transaction.belongsTo(Coupon, { foreignKey: 'coupon_id' })
+
  //Order.hasOne(Transaction)
 module.exports = Transaction;
