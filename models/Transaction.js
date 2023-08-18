@@ -2,7 +2,7 @@ const { DataTypes,Sequelize } = require('sequelize');
 const sequelize = require('./database');
 const User = require('./User');
 const Coupon = require('./Coupon');
-const Order = require('./Order');
+const Order = require('./order');
 
 const Transaction = sequelize.define('Transaction', {
   id: {

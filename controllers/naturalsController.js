@@ -1,16 +1,52 @@
+const { Op } = require('sequelize');
+const User = require('../models/User');
 const Naturals = require('../models/Naturals');
 
-// Create a new naturals entry
 const createNaturalsEntry = async (req, res) => {
   try {
-    const { user_id, time } = req.body;
-    const naturalsEntry = await Naturals.create({ user_id, time });
-    res.status(201).json(naturalsEntry);
+    const { user_id, time, amount } = req.body;
+
+    const user = await User.findByPk(user_id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (user.isHosteller !== 1) {
+      return res.status(400).json({ message: 'Not a Hosteller' });
+    }
+
+    if (user.gender === 0) {
+      if (user.amount < amount) {
+        return res.status(400).json({ message: 'Insufficient balance' });
+      }
+
+      const updatedUser = await user.decrement('amount', { by: amount });
+      await Naturals.create({ user_id, time });
+      return res.status(201).json({ message: 'Naturals entry created', user: updatedUser });
+    } else {
+      const currentDate = new Date();
+      const lastEntry = await Naturals.findOne({
+        where: {
+          user_id,
+          time: {
+            [Op.gte]: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
+            [Op.lt]: new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1),
+          },
+        },
+      });
+
+      if (!lastEntry) {
+        await Naturals.create({ user_id, time });
+        return res.status(201).json({ message: 'Entry created for the boy' });
+      } else {
+        return res.status(400).json({ message: 'Boys can only have one entry per month' });
+      }
+    }
   } catch (err) {
-    res.status(500).json({ error: 'Error creating the naturals entry' });
+    console.error(err.stack);
+    res.status(500).json({ error: 'An error occurred' });
   }
 };
-
 // Read all naturals entries
 const getAllNaturalsEntries = async (req, res) => {
   try {

@@ -1,5 +1,5 @@
 const Transaction = require('../models/Transaction');
-const Order = require('../models/Order');
+const Order = require('../models/order');
 const OrderItem = require('../models/orderItem'); // Adjust the import accordingly
 const User = require('../models/User');
 const Cart = require('../models/Cart');
