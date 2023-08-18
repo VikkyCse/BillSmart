@@ -1,32 +1,43 @@
+const { Op, literal } = require('sequelize');
 const Cart = require('../models/Cart');
 const CartItem = require('../models/Cart_Items');
 const Item = require('../models/Item');
 const sequelize = require('../models/database');
 
-// Error Messages
 const ERR_CART_NOT_FOUND = 'Cart not found';
 const ERR_ITEM_NOT_FOUND = 'Associated item not found';
 const ERR_REQUESTED_COUNT_EXCEEDS_QUANTITY = 'Requested count exceeds available quantity';
 
+const handleServerError = (res, message) => {
+  console.error(message);
+  res.status(500).json({ error: message });
+};
+
 const getCartByUserId = async (req, res) => {
+  const user_id = req.params.id;
+
   try {
-    const user_id = req.params.id;
-    const cart = await Cart.findOne({ where: { user_id } });
+    const cart = await Cart.findOne({
+      where: { user_id },
+      include: [{ model: CartItem, include: [Item] }],
+    });
 
     if (!cart) {
-      const newCart = await Cart.create({ user_id });
-      res.status(200).json(newCart);
-    } else {
-      const cartItems = await CartItem.findAll({
-        where: { Cart_id: cart.id },
-        include: [Item],
+      const newCart = await sequelize.transaction(async (transaction) => {
+        return await Cart.create({ user_id }, { transaction });
       });
 
-       
-      let totalAmount = 0;
-      cartItems.forEach((cartItem) => {
-        totalAmount += cartItem.Item.price * cartItem.count;
-      });
+      res.status(200).json(newCart);
+    } else {
+      const cartItems = cart.CartItems;
+
+      const totalAmount = await CartItem.sum(
+        literal('"CartItem"."count" * "Item"."price"'),
+        {
+          where: { Cart_id: cart.id },
+          include: [{ model: Item }],
+        }
+      );
 
       res.status(200).json({
         cart,
@@ -35,14 +46,14 @@ const getCartByUserId = async (req, res) => {
       });
     }
   } catch (err) {
-    res.status(500).json({ error: 'Error fetching cart by ID' });
+    handleServerError(res, 'Error fetching cart by ID');
   }
 };
 
 const deleteCart = async (req, res) => {
-  try {
-    const user_id = req.params.id;
+  const user_id = req.params.id;
 
+  try {
     const cart = await Cart.findOne({ where: { user_id } });
 
     if (!cart) {
@@ -50,15 +61,16 @@ const deleteCart = async (req, res) => {
       return;
     }
 
-    await CartItem.destroy({ where: { Cart_id: cart.id } });
-    await Cart.destroy({ where: { user_id } });
+    await sequelize.transaction(async (transaction) => {
+      await CartItem.destroy({ where: { Cart_id: cart.id }, transaction });
+      await Cart.destroy({ where: { user_id }, transaction });
+    });
 
-    res.status(204).end(); // 204 No Content - Successfully deleted
+    res.status(204).end();
   } catch (err) {
-    res.status(500).json({ error: 'Error deleting the cart' });
+    handleServerError(res, 'Error deleting the cart');
   }
 };
-
 const createCartItem = async (req, res) => {
   const t = await sequelize.transaction();
   try {
