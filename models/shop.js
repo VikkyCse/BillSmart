@@ -16,6 +16,10 @@ const Shop = sequelize.define('Shop', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  isSpecial: { 
+    type: DataTypes.BOOLEAN,
+    defaultValue: false, 
+  },
 });
 
 module.exports = Shop;

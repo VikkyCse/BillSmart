@@ -10,7 +10,8 @@ const createShop = async (req, res) => {
     // const {image}=req.file.path;
     let info={
       image:req.file.path,
-      name:req.body.name
+      name:req.body.name,
+      isSpecial: req.body.isSpecial || false,
     } 
 
     const shop = await Shop.create( info );
@@ -49,9 +50,9 @@ const getShopById = async (req, res) => {
 const updateShop = async (req, res) => {
   try {
     const shopId = req.params.id;
-    const { name, image } = req.body;
+    const { name, image , isSpecial} = req.body;
     const updatedShop = await Shop.update(
-      { name, image },
+      { name, image ,isSpecial},
       { where: { id: shopId } }
     );
     res.status(200).json(updatedShop);

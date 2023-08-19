@@ -27,8 +27,15 @@ const Item = sequelize.define('Item', {
   },
   quantity: {
     type: DataTypes.INTEGER,
-  }
- 
+  } ,
+  availableForPreorder: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false, 
+  },
+  preorderQuantity: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0, // Default preorder quantity to 0
+  },
 });
 
 Item.belongsTo(Category, { foreignKey: 'category_id' });
