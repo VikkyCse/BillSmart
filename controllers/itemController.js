@@ -54,20 +54,68 @@ const getItemById = async (req, res) => {
   }
 };
 
-// Update an item by ID
+// // Update an item by ID
+// const updateItem = async (req, res) => {
+//   try {
+//     const itemId = req.params.id;
+//     // const { name, veg, image, price, category_id } = req.body;
+//     let info1={
+//       name:req.body.name,
+//       veg:req.body.veg,
+//       image:req.file.path,
+//       price:req.body.price,
+//       category_id: category.id,
+//       quantity:req.body.quantity
+//     }
+//     const updatedItem = await Item.update(
+//       { info1 },
+//       { where: { id: itemId } }
+//     );
+//     res.status(200).json(updatedItem);
+//   } catch (err) {
+//     res.status(500).json({ error: 'Error updating the item' });
+//   }
+// };
 const updateItem = async (req, res) => {
   try {
     const itemId = req.params.id;
-    const { name, veg, image, price, category_id } = req.body;
-    const updatedItem = await Item.update(
-      { name, veg, image, price, category_id },
-      { where: { id: itemId } }
-    );
-    res.status(200).json(updatedItem);
+    const { name, veg, price, quantity, categoryname } = req.body; // Extract categoryname
+    const category = await Category.findOne({ where: { name: categoryname } }); // Use categoryname
+
+    if (!category) {
+      res.status(200).json({ error: 'Category not found' });
+      return;
+    }
+
+    let updateData = {
+      name,
+      veg,
+      price,
+      category_id: category.id,
+      quantity
+    };
+
+    if (req.file) {
+      updateData.image = req.file.path;
+    }
+
+    const [numUpdatedRows, updatedItems] = await Item.update(updateData, {
+      where: { id: itemId },
+      returning: true,
+    });
+
+    if (numUpdatedRows === 0) {
+      return res.status(404).json({ message: 'Item not found' });
+    }
+
+    res.status(200).json(updatedItems[0]);
   } catch (err) {
+    console.error('Error updating the item:', err);
     res.status(500).json({ error: 'Error updating the item' });
   }
 };
+
+
 
 // Delete an item by ID
 const deleteItem = async (req, res) => {

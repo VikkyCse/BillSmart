@@ -46,19 +46,61 @@ const getShopById = async (req, res) => {
 };
 
 // Update a shop by ID
+// const updateShop = async (req, res) => {
+//   try {
+//     const shopId = req.params.id;
+//     // const { name, image } = req.body;
+//     let info={
+//       image:req.file.path,
+//       name:req.body.name
+//     } 
+//     const updatedShop = await Shop.update(
+//       { info },
+//       { where: { id: shopId } }
+//     );
+//     res.status(200).json(updatedShop);
+//   } catch (err) {
+//     res.status(500).json({ error: 'Error updating the shop' });
+//   }
+// };
+
+
 const updateShop = async (req, res) => {
-  try {
-    const shopId = req.params.id;
-    const { name, image } = req.body;
-    const updatedShop = await Shop.update(
-      { name, image },
-      { where: { id: shopId } }
-    );
-    res.status(200).json(updatedShop);
-  } catch (err) {
-    res.status(500).json({ error: 'Error updating the shop' });
+try {
+const shopId = req.params.id;
+const { name } = req.body;
+
+// Check if req.file is available before updating the image
+if (req.file) {
+  const updatedShop = await Shop.update(
+    { name, image: req.file.path },
+    { where: { id: shopId } }
+  );
+
+  if (updatedShop[0] === 0) {
+    return res.status(404).json({ message: 'Shop not found' });
   }
+
+  res.status(200).json(updatedShop);
+} else {
+  // Update only the name if no image is provided
+  const updatedShop = await Shop.update(
+    { name },
+    { where: { id: shopId } }
+  );
+
+  if (updatedShop[0] === 0) {
+    return res.status(404).json({ message: 'Shop not found' });
+  }
+
+  res.status(200).json(updatedShop);
+}
+} catch (err) {
+console.error('Error updating the shop:', err);
+res.status(500).json({ error: 'Error updating the shop' });
+}
 };
+
 
 // Delete a shop by ID
 const deleteShop = async (req, res) => {

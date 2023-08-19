@@ -15,8 +15,9 @@ router.get('/', itemController.getAllItems);
 router.get('/:id', itemController.getItemById);
 
 // Update an item by ID
-router.put('/:id', itemController.updateItem);
-
+// router.put('/:id', itemController.updateItem);
+router.put('/:id', itemController.imgupload, itemController.updateItem);
+    
 // Delete an item by ID
 router.delete('/:id', itemController.deleteItem);
 
