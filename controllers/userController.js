@@ -54,6 +54,31 @@ const updateUser = async (req, res) => {
   }
 };
 
+const updateUserPassword = async (req, res) => {
+  try {
+    const userId = req.params.id; // Extract user ID from the request parameters
+    const { password, newpassword } = req.body; // Extract password and new password from the request body
+    
+    // Find the user by their ID
+    const user1 = await User.findByPk(userId);
+    
+    // Check if the provided current password matches the user's current password
+    if (password == user1.password) {
+      // Update the user's password with the new password
+      const updatedUser = await User.update(
+        { password: newpassword },
+        { where: { id: userId } }
+      );
+      res.status(200).json(updatedUser); // Respond with the updated user object
+    } else {
+      res.status(500).json({ error: 'wrong password' }); // Respond with an error message if the passwords don't match
+    }
+  } catch (err) {
+    res.status(500).json({ error: 'Error updating the user' }); // Respond with a generic error message if an exception occurs
+  }
+};
+
+
 // Delete a user by ID
 const deleteUser = async (req, res) => {
   try {
@@ -98,4 +123,5 @@ module.exports = {
   updateUser,
   deleteUser,
   loginUser,
+  updateUserPassword
 };
