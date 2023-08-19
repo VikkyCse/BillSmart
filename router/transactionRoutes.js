@@ -19,6 +19,6 @@ router.put('/:id', transactionController.updateTransaction);
 router.delete('/:id', transactionController.deleteTransaction);
 
 //refund a transaction
-router.post('/refund', refundController.refund);
+router.post('/refund', transactionController.refund);
 
 module.exports = router;

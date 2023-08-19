@@ -3,7 +3,7 @@ const sequelize = require('./database');
 const User = require('./User');
 const Coupon = require('./Coupon');
 const Order = require('./order');
-const TransactionType = require('./TransactionType'); // Import the TransactionType model
+const TransactionType = require('./TranscationType'); // Import the TransactionType model
 
 const Transaction = sequelize.define('Transaction', {
   id: {
