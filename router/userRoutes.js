@@ -31,4 +31,9 @@ router.put('/:id', userController.updateUser);
 // Delete a user by ID
 router.delete('/:id', userController.deleteUser);
 
+// Update password by user
+router.put(':id/update-password' , userController.updateUserPassword);
+
+
+
 module.exports = router;

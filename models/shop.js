@@ -1,5 +1,6 @@
 const { DataTypes,Sequelize } = require('sequelize');
 const sequelize = require('./database');
+const Category = require('./Category');
 
 const Shop = sequelize.define('Shop', {
   id: {
@@ -16,6 +17,12 @@ const Shop = sequelize.define('Shop', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  isSpecial: { 
+    type: DataTypes.BOOLEAN,
+    defaultValue: false, 
+  },
 });
+
+Shop.hasMany(Category, { onDelete: 'CASCADE' });
 
 module.exports = Shop;
