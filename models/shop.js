@@ -23,6 +23,6 @@ const Shop = sequelize.define('Shop', {
   },
 });
 
-Shop.hasMany(Category, { onDelete: 'CASCADE' });
+// Shop.hasMany(Category, { onDelete: 'CASCADE' });
 
 module.exports = Shop;
