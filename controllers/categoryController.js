@@ -44,19 +44,45 @@ const getCategoryById = async (req, res) => {
 };
 
 // Update a category by ID
+// const updateCategory = async (req, res) => {
+//   try {
+//     const categoryId = req.params.id;
+//     const { name } = req.body;
+//     const updatedCategory = await Category.update(
+//       { name },
+//       { where: { id: categoryId } }
+//     );
+//     res.status(200).json(updatedCategory);
+//   } catch (err) {
+//     res.status(500).json({ error: 'Error updating the category' });
+//   }
+// };
 const updateCategory = async (req, res) => {
   try {
     const categoryId = req.params.id;
     const { name } = req.body;
+    const updatedData = { name };
+
+    if (req.file) {
+      updatedData.image = req.file.path; // Update the image if a new image is provided
+    }
+
     const updatedCategory = await Category.update(
-      { name },
+      updatedData,
       { where: { id: categoryId } }
     );
-    res.status(200).json(updatedCategory);
+
+    if (updatedCategory[0] === 0) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+
+    res.status(200).json({ message: 'Category updated successfully' });
   } catch (err) {
+    console.error('Error updating the category:', err);
     res.status(500).json({ error: 'Error updating the category' });
   }
 };
+
 
 // Delete a category by ID
 const deleteCategory = async (req, res) => {

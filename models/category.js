@@ -17,7 +17,8 @@ const Category = sequelize.define('Category', {
     type:DataTypes.STRING,
     allowNull:true,
   }
-});
+}); 
 Category.belongsTo(Shop,{ foreignKey: 'Shop_id' })
 
+// Category.hasMany(Item, { onDelete: 'CASCADE' });
 module.exports = Category;

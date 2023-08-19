@@ -47,6 +47,25 @@ const getShopById = async (req, res) => {
 };
 
 // Update a shop by ID
+// const updateShop = async (req, res) => {
+//   try {
+//     const shopId = req.params.id;
+//     // const { name, image } = req.body;
+//     let info={
+//       image:req.file.path,
+//       name:req.body.name
+//     } 
+//     const updatedShop = await Shop.update(
+//       { info },
+//       { where: { id: shopId } }
+//     );
+//     res.status(200).json(updatedShop);
+//   } catch (err) {
+//     res.status(500).json({ error: 'Error updating the shop' });
+//   }
+// };
+
+
 const updateShop = async (req, res) => {
   try {
     const shopId = req.params.id;
@@ -60,6 +79,7 @@ const updateShop = async (req, res) => {
     res.status(500).json({ error: 'Error updating the shop' });
   }
 };
+
 
 // Delete a shop by ID
 const deleteShop = async (req, res) => {

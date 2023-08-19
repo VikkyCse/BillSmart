@@ -14,7 +14,9 @@ router.get('/', categoryController.getAllCategories);
 router.get('/:id', categoryController.getCategoryById);
 
 // Update a category by ID
-router.put('/:id', categoryController.updateCategory);
+// router.put('/:id', categoryController.updateCategory);
+router.put('/:id', categoryController.Upload, categoryController.updateCategory);
+
 
 // Delete a category by ID
 router.delete('/:id', categoryController.deleteCategory);

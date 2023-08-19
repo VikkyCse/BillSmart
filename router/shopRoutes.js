@@ -15,7 +15,8 @@ router.get('/', shopController.getAllShops);
 router.get('/:id', shopController.getShopById);
 
 // Update a shop by ID
-router.put('/:id', shopController.updateShop);
+// router.put('/:id', shopController.updateShop);
+router.put('/:id', shopController.upload, shopController.updateShop);
 
 // Delete a shop by ID
 router.delete('/:id', shopController.deleteShop);
