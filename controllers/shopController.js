@@ -2,6 +2,8 @@ const Shop = require('../models/shop');
 const multer=require('multer')
 const path=require('path');
 const { urlToHttpOptions } = require('url');
+const Item = require('../models/Item');
+const Category = require('../models/Category');
 
 // Create a new shop
 const createShop = async (req, res) => {
@@ -85,12 +87,31 @@ const updateShop = async (req, res) => {
 const deleteShop = async (req, res) => {
   try {
     const shopId = req.params.id;
+
+    // Find the categories associated with the shop
+    const categories = await Category.findAll({ where: { Shop_id: shopId } });
+
+    // Collect the category IDs
+    const categoryIds = categories.map(category => category.id);
+
+    // Delete items associated with the found category IDs
+    await Item.destroy({ where: { category_id: categoryIds } });
+
+    // Delete categories associated with the shop
+    await Category.destroy({ where: { Shop_id: shopId } });
+
+    // Delete the shop
     await Shop.destroy({ where: { id: shopId } });
-    res.status(204).end(); // 204 No Content - Successfully deleted
+
+    // Respond with a 204 status code to indicate successful deletion
+    res.status(204).end();
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'Error deleting the shop' });
   }
 };
+
+
 // upload image 
 const storage=multer.diskStorage({
   destination:(req,file,cb) =>{

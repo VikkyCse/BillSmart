@@ -39,6 +39,20 @@ const getUserById = async (req, res) => {
   }
 };
 
+// Read a specific user by ID
+const getUserByRFId = async (req, res) => {
+  try {
+    const rfid = req.params.id;
+    const user = await User.findOne({where:{rfid:rfid}});
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ error: 'Error fetching user by ID' });
+  }
+};
+
 // Update a user by ID
 const updateUser = async (req, res) => {
   try {
@@ -123,5 +137,6 @@ module.exports = {
   updateUser,
   deleteUser,
   loginUser,
-  updateUserPassword
+  updateUserPassword,
+  getUserByRFId
 };

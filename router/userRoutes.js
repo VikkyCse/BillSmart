@@ -22,6 +22,9 @@ router.get('/login', userController.loginUser);
 // Read all users
 router.get('/', userController.getAllUsers);
 
+// read a specific user ny rfid
+router.get('/:id',userController.getUserByRFId);
+
 // Read a specific user by ID
 router.get('/:id', userController.getUserById);
 
