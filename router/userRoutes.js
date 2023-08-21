@@ -23,13 +23,17 @@ router.get('/login', userController.loginUser);
 router.get('/', userController.getAllUsers);
 
 // read a specific user ny rfid
-router.get('/:id',userController.getUserByRFId);
+router.get('/rfid/:id',userController.getUserByRFId);
 
 // Read a specific user by ID
 router.get('/:id', userController.getUserById);
 
+
 // Update a user by ID
 router.put('/:id', userController.updateUser);
+
+//recharge with rfid
+router.put('/', userController.Recharge);
 
 // Delete a user by ID
 router.delete('/:id', userController.deleteUser);

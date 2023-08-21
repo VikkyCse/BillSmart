@@ -130,6 +130,34 @@ const loginUser = async (req, res) => {
   }
 };
 
+// Update a user by ID
+const Recharge = async (req, res) => {
+  try {
+    const { rfid, amount } = req.body;
+    
+    // Find the user using the rfid
+    const user = await User.findOne({ where: { rfid: rfid } });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    // Calculate the new amount by adding the old amount to the new amount
+    const newAmount = user.amount + amount;
+
+    // Update the user's amount with the new amount
+    const updatedUser = await User.update(
+      { amount: newAmount },
+      { where: { id: user.id } }
+    );
+
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error updating the user' });
+  }
+};
+
 module.exports = {
   getAllUsers,
   getUserById,
@@ -138,5 +166,6 @@ module.exports = {
   deleteUser,
   loginUser,
   updateUserPassword,
-  getUserByRFId
+  getUserByRFId,
+  Recharge
 };
