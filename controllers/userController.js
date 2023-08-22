@@ -1,3 +1,4 @@
+const Transaction = require('../models/Transaction');
 const User = require('../models/User');
 
 const { validationResult } = require('express-validator');
@@ -134,27 +135,36 @@ const loginUser = async (req, res) => {
 const Recharge = async (req, res) => {
   try {
     const { rfid, amount } = req.body;
-    
-    // Find the user using the rfid
+
     const user = await User.findOne({ where: { rfid: rfid } });
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-    
-    // Calculate the new amount by adding the old amount to the new amount
+
     const newAmount = user.amount + amount;
 
-    // Update the user's amount with the new amount
-    const updatedUser = await User.update(
+    // Update user's amount
+    await User.update(
       { amount: newAmount },
       { where: { id: user.id } }
     );
 
-    res.status(200).json(updatedUser);
+  
+
+    // Create a new transaction record directly associating with the recharge TransactionType
+    const newTransaction = await Transaction.create({
+      Amount: amount,
+      Transaction_Time: new Date(),
+      Is_completed: true,
+      user_id: user.id,
+      transactiontype:1
+    });
+
+    res.status(200).json({ user, transaction: newTransaction });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Error updating the user' });
+    res.status(500).json({ error: 'Error updating the user and creating a transaction' });
   }
 };
 

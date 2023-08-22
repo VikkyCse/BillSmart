@@ -3,7 +3,7 @@ const sequelize = require('./database');
 const User = require('./User');
 const Coupon = require('./Coupon');
 const Order = require('./order');
-const TransactionType = require('./TranscationType'); // Import the TransactionType model
+// const TransactionType = require('./TranscationType'); // Import the TransactionType model
 
 const Transaction = sequelize.define('Transaction', {
   id: {
@@ -25,10 +25,16 @@ const Transaction = sequelize.define('Transaction', {
   order_id: {
     type: DataTypes.UUID,
   },
+  transactiontype: {
+    type: DataTypes.INTEGER(1),
+    allowNull: false,
+  },
+  //1-recharge 2-natural , 3-order , 4 -refund
+  
 });
 
 Transaction.belongsTo(User, { foreignKey: 'user_id' });
 Transaction.belongsTo(Coupon, { foreignKey: 'coupon_id' });
-Transaction.belongsTo(TransactionType, { foreignKey: 'transaction_type_id' });
+
 
 module.exports = Transaction;
