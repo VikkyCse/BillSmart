@@ -65,7 +65,7 @@ const createTransaction = async (req, res) => {
 };
 
 
-createTransactionByAdmin = async (req, res) => {
+const createTransactionByAdmin = async (req, res) => {
   const {
     Amount,
     Transaction_Time,
