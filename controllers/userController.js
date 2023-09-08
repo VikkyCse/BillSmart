@@ -1,3 +1,4 @@
+const Transaction = require('../models/Transaction');
 const User = require('../models/User');
 
 const { validationResult } = require('express-validator');
@@ -30,6 +31,20 @@ const getUserById = async (req, res) => {
   try {
     const userId = req.params.id;
     const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ error: 'Error fetching user by ID' });
+  }
+};
+
+// Read a specific user by ID
+const getUserByRFId = async (req, res) => {
+  try {
+    const rfid = req.params.id;
+    const user = await User.findOne({where:{rfid:rfid}});
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -116,6 +131,43 @@ const loginUser = async (req, res) => {
   }
 };
 
+// Update a user by ID
+const Recharge = async (req, res) => {
+  try {
+    const { rfid, amount } = req.body;
+
+    const user = await User.findOne({ where: { rfid: rfid } });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const newAmount = user.amount + amount;
+
+    // Update user's amount
+    await User.update(
+      { amount: newAmount },
+      { where: { id: user.id } }
+    );
+
+  
+
+    // Create a new transaction record directly associating with the recharge TransactionType
+    const newTransaction = await Transaction.create({
+      Amount: amount,
+      Transaction_Time: new Date(),
+      Is_completed: true,
+      user_id: user.id,
+      transactiontype:1
+    });
+
+    res.status(200).json({ user, transaction: newTransaction });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error updating the user and creating a transaction' });
+  }
+};
+
 module.exports = {
   getAllUsers,
   getUserById,
@@ -123,5 +175,7 @@ module.exports = {
   updateUser,
   deleteUser,
   loginUser,
-  updateUserPassword
+  updateUserPassword,
+  getUserByRFId,
+  Recharge
 };

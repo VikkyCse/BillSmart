@@ -1,4 +1,5 @@
 const Category = require('../models/Category');
+const Item = require('../models/Item');
 const Shop = require('../models/shop');
 const multer=require('multer');
 const path=require('path');
@@ -88,6 +89,7 @@ const updateCategory = async (req, res) => {
 const deleteCategory = async (req, res) => {
   try {
     const categoryId = req.params.id;
+    await Item.destroy({where: {category_id: categoryId}})
     await Category.destroy({ where: { id: categoryId } });
     res.status(204).end(); // 204 No Content - Successfully deleted
   } catch (err) {

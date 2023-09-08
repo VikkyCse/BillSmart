@@ -5,6 +5,8 @@ const transactionController = require('../controllers/transactionController');
 // const isUser = require('../middleware/authorization').isUser;
 // Create a new transaction
 router.post('/', transactionController.createTransaction);
+router.post('/createTransactionByAdmin', transactionController.createTransactionByAdmin);
+
 
 // Read all transactions
 router.get('/', transactionController.getAllTransactions);

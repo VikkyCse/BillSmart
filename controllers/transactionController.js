@@ -64,6 +64,60 @@ const createTransaction = async (req, res) => {
   }
 };
 
+
+const createTransactionByAdmin = async (req, res) => {
+  const {
+    Amount,
+    Transaction_Time,
+    Is_completed,
+    user_id,
+    coupon_id,
+    Type,
+    items // An array of objects containing item_id and quantity
+  } = req.body;
+
+  try {
+    const user = await User.findByPk(user_id);
+    if (!user) {
+      return res.status(400).json({ error: 'User not found' });
+    }
+    if (user.Amount < Amount) {
+      return res.status(400).json({ error: 'Insufficient balance' });
+    }
+
+    await sequelize.transaction(async (t) => {
+      user.Amount -= Amount;
+      await user.save({ transaction: t });
+
+      const newOrder = await Order.create({ transaction: t });
+
+      const orderItems = items.map(item => ({
+        Item_id: item.item_id,
+        Count: item.quantity,
+        orderId: newOrder.id
+      }));
+
+      await OrderItem.bulkCreate(orderItems, { transaction: t });
+
+      const transaction = await Transaction.create({
+        Amount,
+        Transaction_Time,
+        Is_completed,
+        user_id,
+        coupon_id,
+        order_id: newOrder.id,
+        Type
+      }, { transaction: t });
+
+      res.status(201).json(transaction);
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error creating the transaction' });
+  }
+};
+
+
 const getAllTransactions = async (req, res) => {
   try {
     const transactions = await Transaction.findAll();
@@ -202,5 +256,6 @@ module.exports = {
   getTransactionById,
   updateTransaction,
   deleteTransaction,
-  refund
+  refund,
+  createTransactionByAdmin
 };

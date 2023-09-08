@@ -7,15 +7,15 @@ const naturalsController = require('../controllers/naturalsController');
 router.post('/', naturalsController.createNaturalsEntry);
 
 // Read all naturals entries
-router.get('/naturals', naturalsController.getAllNaturalsEntries);
+// router.get('/naturals', naturalsController.getAllNaturalsEntries);
 
 // Read a specific naturals entry by ID
-router.get('/naturals/:id', naturalsController.getNaturalsEntryById);
+router.get('/naturals/:id', naturalsController.getNaturalsEntryByUserId);
 
 // Update a naturals entry by ID
-router.put('/naturals/:id', naturalsController.updateNaturalsEntry);
+// router.put('/naturals/:id', naturalsController.updateNaturalsEntry);
 
 // Delete a naturals entry by ID
-router.delete('/naturals/:id', naturalsController.deleteNaturalsEntry);
+// router.delete('/naturals/:id', naturalsController.deleteNaturalsEntry);
 
 module.exports = router;
