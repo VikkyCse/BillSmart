@@ -12,16 +12,16 @@ const createNaturalsEntry = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    if (user.isHosteller !== 1) {
+    if (user.isHosteller !== true) {
       return res.status(400).json({ message: 'Not a Hosteller' });
     }
 
     if (user.gender === 0) {
-      if (user.amount < amount) {
+      if (user.natural_amt< amount) {
         return res.status(400).json({ message: 'Insufficient balance' });
       }
 
-      const updatedUser = await user.decrement('amount', { by: amount });
+      const updatedUser = await user.decrement('natural_amt', { by: amount });
       await Naturals.create({ user_id, time });
       const createdTransaction = await Transaction.create({
         Amount: amount,

@@ -4,7 +4,7 @@ const naturalsController = require('../controllers/naturalsController');
 // const isAdmin = require('../middleware/authorization').isAdmin;
 // const isUser = require('../middleware/authorization').isUser;
 // Create a new naturals entry
-router.post('/naturals', naturalsController.createNaturalsEntry);
+router.post('/', naturalsController.createNaturalsEntry);
 
 // Read all naturals entries
 // router.get('/naturals', naturalsController.getAllNaturalsEntries);
