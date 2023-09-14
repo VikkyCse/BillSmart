@@ -7,12 +7,15 @@ const shopController = require('../controllers/shopController');
 // router.post('/',shopController.upload, shopController.createShop);
 router.post('/create-shop', shopController.upload, shopController.createShop);
 
-
+ 
 // Read all shops
 router.get('/', shopController.getAllShops);
-
+ 
 // Read a specific shop by ID
 router.get('/:id', shopController.getShopById);
+// Define the route for getting categories by user ID
+ 
+
 
 // Update a shop by ID
 // router.put('/:id', shopController.updateShop);

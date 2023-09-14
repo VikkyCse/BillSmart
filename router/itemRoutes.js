@@ -10,9 +10,9 @@ router.post('/create', itemController.imgupload,itemController.createItem);
 
 // Read all
 router.get('/', itemController.getAllItems);
-
+router.get('/:id', itemController.getAllItemsWithCategory);
 // Read a specific item by ID
-router.get('/:id', itemController.getItemById);
+router.get('/byid/:id', itemController.getItemById);
 
 // Update an item by ID
 // router.put('/:id', itemController.updateItem);

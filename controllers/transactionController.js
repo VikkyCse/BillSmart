@@ -6,16 +6,18 @@ const Cart = require('../models/Cart');
 const CartItem = require('../models/Cart_Items');
 
 const { Op } = require('sequelize');
+const Item = require('../models/Item');
+const sequelize = require('../models/database');
+const currentDate = new Date();
 
 const createTransaction = async (req, res) => {
   const {
     Amount,
     Transaction_Time,
-    Is_completed,
     user_id,
     coupon_id,
-    Type
   } = req.body;
+  
 
   try {
     const user = await User.findByPk(user_id);
@@ -36,11 +38,11 @@ const createTransaction = async (req, res) => {
       const transaction = await Transaction.create({
         Amount,
         Transaction_Time,
-        Is_completed,
+        Is_completed : 0,
         user_id,
         coupon_id,
         order_id: newOrder.id,
-        Type
+        Type : 3,
       }, { transaction: t });
 
       const cartItems = await CartItem.findAll({ where: { Cart_id: cart.id } });
@@ -101,7 +103,7 @@ const createTransactionByAdmin = async (req, res) => {
 
       const transaction = await Transaction.create({
         Amount,
-        Transaction_Time,
+        Transaction_Time ,
         Is_completed,
         user_id,
         coupon_id,
@@ -117,6 +119,136 @@ const createTransactionByAdmin = async (req, res) => {
   }
 };
 
+const checkQuantity = async (req, res) => {
+  try { 
+    const { cartItems } = req.body;
+
+    // const availableItems = [];
+    const insufficientItems = [];
+
+    for (const cartItem of cartItems) {
+      const { itemId, quantity } = cartItem;
+      const item = await Item.findByPk(itemId);
+ 
+
+      if (!item) {
+        insufficientItems.push({ itemId, name: 'Item not found', availableQuantity: 0, quantity });
+      } else if (item.quantity < quantity) {
+        insufficientItems.push({ itemId, name: item.name, availableQuantity: item.quantity, quantity });
+      } 
+      // else {
+      //   availableItems.push({ itemId, name: item.name, availableQuantity: item.quantity, quantity });
+      // }
+    }
+
+    res.status(200).json({ insufficientItems });
+  } catch (error) {
+    console.error('Error checking item availability:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+
+}
+
+
+
+
+
+const createTransactionByUser = async (req, res) => {
+  const {
+    Amount,
+    user_id,
+    coupon_id,
+    cartItems //collection
+  } = req.body;
+
+  try {
+    const user = await User.findByPk(user_id);
+    if (!user) {
+      return res.status(200).json({ error: 'User not found' });
+    }
+
+    const insufficientItems = [];
+
+    await sequelize.transaction(async (t) => {
+      // Calculate the total quantity and price for the items being ordered
+      let totalQuantity = 0;
+      let totalPrice = 0;
+
+      for (const item of cartItems) {
+        const { itemId, quantity , cost} = item;
+
+        // Check if the item exists and if its available quantity is sufficient
+        const availableItem = await Item.findByPk(itemId);
+        if (!availableItem || availableItem.quantity < quantity) {
+          // If insufficient quantity, add details to the insufficientItems array
+          insufficientItems.push({
+            itemId,
+            name: availableItem ? availableItem.name : 'Item not found',
+            available_quantity: availableItem ? availableItem.quantity : 0,
+            ordered_quantity: quantity,
+          });
+        } else {
+          totalQuantity += quantity;
+          totalPrice += availableItem.price * quantity;
+
+          // Deduct the ordered quantity from the available item quantity
+          availableItem.quantity -= quantity;
+          await availableItem.save({ transaction: t });
+        }
+      }
+
+      if (insufficientItems.length > 0) {
+        // Respond with details of insufficient quantity items
+        return res.status(200).json({
+          error: 'Insufficient quantity for one or more items',
+          insufficientItems,
+        });
+      }
+
+      console.log(totalPrice)
+      if (Amount != totalPrice) {
+        return res.status(200).json({ error: 'Try Again' });
+      }
+
+      if (user.amount < totalPrice) {
+        return res.status(200).json({ error: 'Insufficient balance' });
+      }
+
+      // Deduct the total price from the user's balance
+      user.amount -= totalPrice;
+      await user.save({ transaction: t });
+
+      // Create a new order
+      const newOrder = await Order.create({ transaction: t });
+
+      // Create order items associated with the new order
+      const orderItems = cartItems.map(item => ({
+        Item_id: item.itemId,
+        Quantity: item.quantity,
+        orderId: newOrder.id,
+        cost : item.cost
+      }));
+
+      await OrderItem.bulkCreate(orderItems, { transaction: t });
+
+      // Create a new transaction record
+      const transaction = await Transaction.create({
+        Amount: totalPrice,
+        Transaction_Time : currentDate,
+        Is_completed:false,
+        user_id,
+        coupon_id,
+        order_id: newOrder.id,
+        transactiontype:3
+      }, { transaction: t });
+
+      res.status(201).json(transaction.id);
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(200).json({ error: 'Error creating the transaction'  });
+  }
+};
 
 const getAllTransactions = async (req, res) => {
   try {
@@ -126,6 +258,17 @@ const getAllTransactions = async (req, res) => {
     res.status(500).json({ error: 'Error fetching transactions' });
   }
 };
+
+const getAllTransactionsbyUser = async (req, res) => {
+  try {
+    const userid = req.params.id;
+    const transactions = await Transaction.findAll({ where: { user_id: userid } });
+    res.status(200).json(transactions);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching transactions' });
+  }
+};
+
 
 const getTransactionById = async (req, res) => {
   const transactionId = req.params.id;
@@ -248,6 +391,30 @@ const refund = async (req, res) => {
   }
 };
 
+const getOrderItemsByOrderId = async (req, res) => {
+  try {
+    const { orderId } = req.params; // Assuming you pass orderId as a parameter
+    // console.log(orderId)
+    // Find all order items with the specified orderId
+    const orderItems = await OrderItem.findAll({
+      where: { orderId:orderId },
+    });
+
+    // Check if any order items were found
+    if (orderItems.length == 0) {
+      return res.status(200).json({ message: 'No order items found for the specified order.' });
+    }
+
+    // Return the found order items
+    res.status(200).json(orderItems);
+  } catch (error) {
+    console.error('Error fetching order items:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+
 
 
 module.exports = {
@@ -257,5 +424,9 @@ module.exports = {
   updateTransaction,
   deleteTransaction,
   refund,
-  createTransactionByAdmin
+  createTransactionByAdmin,
+  createTransactionByUser,
+  checkQuantity,
+  getAllTransactionsbyUser,
+  getOrderItemsByOrderId
 };

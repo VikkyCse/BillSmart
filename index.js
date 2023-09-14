@@ -11,13 +11,23 @@ const cartRoutes = require('./router/cartRoutes');
 const couponRoutes = require('./router/couponRoutes');
 const naturalsRoutes = require('./router/naturalsRoutes');
 const categoryRoutes = require('./router/categoryRoutes');
-const Order = require('./models/Order');
+const Order = require('./models/order');
 const transactionRoutes=require('./router/transactionRoutes');
+const cors = require('cors');
+
+
+
 
 // const orderItem = require('./models/orderItem')
 app = express();
+// app.use((_req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Headers', '*');
 
+//   next();
+// });
 app.use(express.json());
+app.use(cors());
 app.use(bodyParser.text({ type: '/' }));
 // Routes for each model
 app.use('/users', userRoutes);

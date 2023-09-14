@@ -13,10 +13,13 @@ const OrderItem = sequelize.define('OrderItem', {
     Quantity: {
         type: DataTypes.INTEGER,
     },
+    cost:{
+        type: DataTypes.INTEGER,
+    }
 });
 
 // Create associations
-OrderItem.belongsTo(Item); // Adds the foreign key "ItemId" to the OrderItem table
-OrderItem.belongsTo(Order); // Adds the foreign key "OrderId" to the OrderItem table
+OrderItem.belongsTo(Item,{ foreignKey: 'Item_id' }); // Adds the foreign key "ItemId" to the OrderItem table
+OrderItem.belongsTo(Order,{ foreignKey: 'orderId' }); // Adds the foreign key "OrderId" to the OrderItem table
 
 module.exports = OrderItem;

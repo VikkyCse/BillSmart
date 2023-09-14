@@ -43,6 +43,35 @@ const getCategoryById = async (req, res) => {
     res.status(500).json({ error: 'Error fetching category by ID' });
   }
 };
+ 
+const getCategoryByName = async (req, res) => {
+  try {
+    const categoryName = req.params.name; // Assuming the category name is provided as a URL parameter
+    const category = await Category.findOne({ where: { name: categoryName } });
+
+    if (!category) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+
+    res.status(200).json(category);
+  } catch (err) {
+    res.status(500).json({ error: 'Error fetching category by name' });
+  }
+};
+
+const getAllCategoriesByShopId = async (req, res) => {
+  try {
+    const { id } = req.params // Assuming user_id is available in the request parameters
+    console.log(id)
+    const categories = await Category.findAll({
+      where: { Shop_id:id }, // Filter categories by user_id
+    });
+
+    res.status(200).json(categories);
+  } catch (err) {
+    res.status(500).json({ error: 'Error fetching categories by user ID' });
+  }
+};
 
 // Update a category by ID
 // const updateCategory = async (req, res) => {
@@ -131,4 +160,6 @@ module.exports = {
   updateCategory,
   deleteCategory,
   Upload,
+  getAllCategoriesByShopId,
+  getCategoryByName
 };

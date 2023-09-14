@@ -15,7 +15,7 @@ const createUser = async (req, res) => {
     res.status(500).json({ error: 'Error creating the user' ,err});
   }
 };
-
+ 
 // Read all users
 const getAllUsers = async (req, res) => {
   try {
@@ -24,7 +24,7 @@ const getAllUsers = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: 'Error fetching users' });
   }
-};
+};  
 
 // Read a specific user by ID
 const getUserById = async (req, res) => {
@@ -37,6 +37,21 @@ const getUserById = async (req, res) => {
     res.status(200).json(user);
   } catch (err) {
     res.status(500).json({ error: 'Error fetching user by ID' });
+  }
+};
+
+const getUserByUserName = async (req, res) => {
+  try {
+    const userName = req.params.user_name; // Assuming the parameter in the URL is 'user_name'
+    const user = await User.findOne({ where: { user_name: userName } });
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ error: 'Error fetching user by user_name' });
   }
 };
 
@@ -107,7 +122,6 @@ const deleteUser = async (req, res) => {
 
 
 
-// User login
 const loginUser = async (req, res) => {
   const { name, password, rfid } = req.query;
 
@@ -117,19 +131,36 @@ const loginUser = async (req, res) => {
     if (rfid) {
       user = await User.findOne({ where: { rfid } });
     } else {
-      user = await User.findOne({ where: { name } });
-      console.log(user);
+      user = await User.findOne({ where: { User_name:name } });
+      
       if (!user) {
-        return res.status(401).json({ message: "errror" });
+        return res.status(200).json({ error: "User not found" });
+      }
+      
+      // If using password-based login
+      if (password==user.password) {
+        // const passwordMatch = await bcrypt.compare(password, user.passwordHash);
+        
+
+      }
+      else{
+        return res.status(401).json({ message: "Incorrect password" });
       }
     }
 
+    // Generate and send an authentication token (JWT) if needed
+    // const token = generateAuthToken(user); // Implement this function
 
-    return res.json({ message : true });
+    res.status(200).json({ user});
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.error("Error during login:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
+
+  
 
 // Update a user by ID
 const Recharge = async (req, res) => {
@@ -177,5 +208,6 @@ module.exports = {
   loginUser,
   updateUserPassword,
   getUserByRFId,
-  Recharge
+  Recharge,
+  getUserByUserName
 };

@@ -6,13 +6,16 @@ const transactionController = require('../controllers/transactionController');
 // Create a new transaction
 router.post('/', transactionController.createTransaction);
 router.post('/createTransactionByAdmin', transactionController.createTransactionByAdmin);
-
+router.post('/createTransactionByUser', transactionController.createTransactionByUser);
+router.get('/orders/:orderId', transactionController.getOrderItemsByOrderId);
+router.post('/checkQuantity', transactionController.checkQuantity);
 
 // Read all transactions
 router.get('/', transactionController.getAllTransactions);
 
 // Read a specific transaction by ID
-router.get('/:id', transactionController.getTransactionById);
+// router.get('/:id', transactionController.getTransactionById);
+router.get('/:id', transactionController.getAllTransactionsbyUser);
 
 // Update a transaction by ID
 router.put('/:id', transactionController.updateTransaction);

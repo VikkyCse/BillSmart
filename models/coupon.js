@@ -16,8 +16,8 @@ const Coupon = sequelize.define('Coupon', {
   Expire_date: {
     type: DataTypes.DATE,
     allowNull: true,
-  },
-  isoffer: {
+  }, 
+  isoffer: { 
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },

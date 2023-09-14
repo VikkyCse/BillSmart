@@ -3,6 +3,8 @@ const Item = require('../models/Item');
 const multer=require('multer')
 const path=require('path')
 
+
+
 // Create a new item
 const createItem = async (req, res) => {
   try {
@@ -36,7 +38,18 @@ const getAllItems = async (req, res) => {
     const items = await Item.findAll();
     res.status(200).json(items);
   } catch (err) {
-    res.status(500).json({ error: 'Error fetching items' });
+    res.status(500).json({ error: 'Error fetching items',err });
+  }
+};
+const getAllItemsWithCategory = async (req, res) => {
+  try {
+    const {id}=req.params;
+    const items = await Item.findAll({
+      where: { category_id :id },
+    }); 
+    res.status(200).json(items);
+  } catch (err) {
+    res.status(500).json({ error: 'Error fetching items', err });
   }
 };
 
@@ -46,7 +59,7 @@ const getItemById = async (req, res) => {
     const itemId = req.params.id;
     const item = await Item.findByPk(itemId);
     if (!item) {
-      return res.status(404).json({ message: 'Item not found' });
+      return res.status(200).json({ error: 'Item not found' });
     }
     res.status(200).json(item);
   } catch (err) {
@@ -160,5 +173,6 @@ module.exports = {
   getItemById,
   updateItem,
   deleteItem,
-  imgupload
+  imgupload,
+  getAllItemsWithCategory
 };

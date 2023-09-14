@@ -103,6 +103,41 @@ const createCartItem = async (req, res) => {
   }
 };
 
+const createOrUpdateCartItem = async (req, res) => {
+  const t = await sequelize.transaction();
+  try {
+    const { Item_id, Count, user_id } = req.body;
+
+    // Find the user's cart
+    const [cart, created] = await Cart.findOrCreate({ where: { user_id } });
+    
+    // Try to find an existing cart item for the specified item and user's cart
+    const cartItem = await CartItem.findOne({
+      where: { Item_id, Cart_id: cart.id },
+    });
+
+    if (!cartItem) {
+      // If the cart item doesn't exist, create a new one
+      await CartItem.create({ Item_id, Count, user_id, Cart_id: cart.id }, { transaction: t });
+    } else {
+      // If the cart item exists, update its count
+      await CartItem.update( 
+        { Count },
+        {
+          where: { id: cartItem.id },
+          transaction: t,
+        }
+      );
+    }    
+
+    await t.commit();
+    res.status(201).send({ message: 'Cart item created or updated successfully' });
+  } catch (err) {
+    await t.rollback();
+    res.status(500).send({ error: 'Error creating or updating the cart item', err: err.message });
+  }
+};
+
 
 
 // const updateCartItem = async (req, res) => {
@@ -245,4 +280,5 @@ module.exports = {
   createCartItem,
   updateCartItem,
   deleteCartItem,
+  createOrUpdateCartItem
 };

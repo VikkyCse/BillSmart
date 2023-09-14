@@ -30,10 +30,10 @@ const getAllShops = async (req, res) => {
     const shops = await Shop.findAll();
     res.status(200).json(shops);
   } catch (err) {
-    res.status(500).json({ error: 'Error fetching shops' });
-  }
-};
-
+    res.status(500).json({ error: 'Error fetching shops' , err});
+  } 
+}; 
+ 
 // Read a specific shop by ID
 const getShopById = async (req, res) => {
   try {
