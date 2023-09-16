@@ -1,3 +1,4 @@
+require('dotenv').config();
 const sequelize = require('./models/database');
 const express = require('express');
 const bodyParser = require('body-parser')
@@ -13,10 +14,11 @@ const naturalsRoutes = require('./router/naturalsRoutes');
 const categoryRoutes = require('./router/categoryRoutes');
 const Order = require('./models/order');
 const transactionRoutes=require('./router/transactionRoutes');
+const authRoutes = require('./router/authRoutes');
+const authenticateToken = require('./middleware/authMiddleware'); 
 const cors = require('cors');
 
-
-
+console.log('JWT Secret Key:', process.env.JWT_SECRET_KEY);
 
 // const orderItem = require('./models/orderItem')
 app = express();
@@ -30,6 +32,7 @@ app.use(express.json());
 app.use(cors());
 app.use(bodyParser.text({ type: '/' }));
 // Routes for each model
+app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/item', itemRoutes);
 app.use('/shops', shopRoutes);

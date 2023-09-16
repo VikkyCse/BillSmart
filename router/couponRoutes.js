@@ -1,21 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const couponController = require('../controllers/couponController');
-// const isAdmin = require('../middleware/authorization').isAdmin;
-// const isUser = require('../middleware/authorization').isUser;
+const { authenticateToken, authorizeAdmin ,authorizeUser } = require('../middleware/authMiddleware');
+
 // Create a new coupon
-router.post('/coupons', couponController.createCoupon);
+router.post('/coupons',authenticateToken,authorizeAdmin, couponController.createCoupon);
 
 // Read all coupons
-router.get('/coupons', couponController.getAllCoupons);
+router.get('/coupons',authenticateToken, couponController.getAllCoupons);
 
 // Read a specific coupon by ID
-router.get('/coupons/:id', couponController.getCouponById);
+router.get('/coupons/:id', authenticateToken,couponController.getCouponById);
 
 // Update a coupon by ID
-router.put('/coupons/:id', couponController.updateCoupon);
+router.put('/coupons/:id',authenticateToken,authorizeAdmin, couponController.updateCoupon);
 
 // Delete a coupon by ID
-router.delete('/coupons/:id', couponController.deleteCoupon);
+router.delete('/coupons/:id',authenticateToken,authorizeAdmin, couponController.deleteCoupon);
 
 module.exports = router;

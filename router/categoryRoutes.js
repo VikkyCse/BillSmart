@@ -1,26 +1,25 @@
 const express = require('express');
 const router = express.Router();
 const categoryController = require('../controllers/categoryController');
-// const isAdmin = require('../middleware/authorization').isAdmin;
-// const isUser = require('../middleware/authorization').isUser;
+const { authenticateToken, authorizeAdmin ,authorizeUser } = require('../middleware/authMiddleware');
 // Create a new category
-router.post('/', categoryController.Upload, categoryController.createCategory);
+router.post('/',authenticateToken,authorizeAdmin, categoryController.Upload, categoryController.createCategory);
 // router.post('/', categoryController.createCategory);
 
 // Read all categories
-router.get('/', categoryController.getAllCategories);
+router.get('/',authenticateToken, categoryController.getAllCategories);
 
 // Read a specific category by ID
-router.get('/:id', categoryController.getCategoryById);
-router.get('/byname/:name', categoryController.getCategoryByName);
+router.get('/:id',authenticateToken, categoryController.getCategoryById);
+router.get('/byname/:name',authenticateToken, categoryController.getCategoryByName);
 
 // Update a category by ID
 // router.put('/:id', categoryController.updateCategory);
-router.put('/:id', categoryController.Upload, categoryController.updateCategory);
-router.get('/byshop/:id', categoryController.getAllCategoriesByShopId);
+router.put('/:id',authenticateToken,authorizeAdmin, categoryController.Upload, categoryController.updateCategory);
+router.get('/byshop/:id',authenticateToken, categoryController.getAllCategoriesByShopId);
 
 
 // Delete a category by ID
-router.delete('/:id', categoryController.deleteCategory);
+router.delete('/:id',authenticateToken,authorizeAdmin, categoryController.deleteCategory);
 
 module.exports = router;
