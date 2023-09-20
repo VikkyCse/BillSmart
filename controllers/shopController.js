@@ -14,6 +14,7 @@ const createShop = async (req, res) => {
       image:req.file.path,
       name:req.body.name,
       isSpecial: req.body.isSpecial || false,
+      Hide:req.body.Hide || false
     } 
 
     const shop = await Shop.create( info );
@@ -70,13 +71,27 @@ const getShopById = async (req, res) => {
 
 const updateShop = async (req, res) => {
   try {
-    const shopId = req.params.id;
-    const { name, image , isSpecial} = req.body;
-    const updatedShop = await Shop.update(
-      { name, image ,isSpecial},
-      { where: { id: shopId } }
-    );
-    res.status(200).json(updatedShop);
+    const { id } = req.params;
+    const { name, image, Hide, isSpecial } = req.body;
+
+    // Find the shop by ID
+    const shop = await Shop.findByPk(id);
+
+    if (!shop) {
+      return res.status(404).json({ message: 'Shop not found' });
+    }
+
+    // Update shop attributes
+    shop.name = name || shop.name;
+    shop.image = req.file.path || shop.image;
+    shop.Hide = Hide || shop.Hide;
+    shop.isSpecial = isSpecial || shop.isSpecial;
+
+    // Save the updated shop
+    await shop.save();
+
+    res.status(200).json(shop);
+    
   } catch (err) {
     res.status(500).json({ error: 'Error updating the shop' });
   }
