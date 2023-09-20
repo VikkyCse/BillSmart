@@ -8,12 +8,13 @@ const path=require('path');
 const createCategory = async (req, res) => {
   try {
     const { name, Shopname } = req.body;
+    
     const shop = await Shop.findOne({where:{name:Shopname}})
     if(!shop){
       res.send(JSON.stringify({"messsage":"shop not found"}))
       return
     }
-    const category = await Category.create({ name,Shop_id:shop.id });
+    const category = await Category.create({ name,Shop_id:shop.id , image:req.file.path , Hide:req.body.Hide || false });
     res.status(201).json(category);
   } catch (err) {
     res.status(500).json({ error: 'Error creating the category' });
@@ -90,12 +91,19 @@ const getAllCategoriesByShopId = async (req, res) => {
 const updateCategory = async (req, res) => {
   try {
     const categoryId = req.params.id;
-    const { name } = req.body;
-    const updatedData = { name };
+    const updatedData = {};
 
     if (req.file) {
       updatedData.image = req.file.path; // Update the image if a new image is provided
     }
+    if (req.body.name) {
+      updatedData.name = req.body.name; // Update the image if a new image is provided
+    }
+    if (req.body.Hide) {
+      updatedData.Hide = req.body.Hide; // Update the image if a new image is provided
+    }
+
+
 
     const updatedCategory = await Category.update(
       updatedData,
