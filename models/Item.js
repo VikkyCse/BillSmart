@@ -1,6 +1,7 @@
 const { DataTypes,Sequelize } = require('sequelize');
 const sequelize = require('./database');
 const Category = require('./Category');
+const Shop = require('./shop');
   
 const Item = sequelize.define('Item', {
   id: {
