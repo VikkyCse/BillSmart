@@ -16,7 +16,11 @@ const Category = sequelize.define('Category', {
   image: {
     type:DataTypes.STRING,
     allowNull:true,
-  }
+  },
+  Hide: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false, 
+  },
 }); 
 Category.belongsTo(Shop,{ foreignKey: 'Shop_id' })
 

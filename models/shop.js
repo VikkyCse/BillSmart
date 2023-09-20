@@ -16,6 +16,10 @@ const Shop = sequelize.define('Shop', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  Hide: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false, 
+  },
   isSpecial: { 
     type: DataTypes.BOOLEAN,
     defaultValue: false, 

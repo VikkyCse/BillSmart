@@ -32,12 +32,29 @@ const Item = sequelize.define('Item', {
     type: DataTypes.BOOLEAN,
     defaultValue: false, 
   },
+  Hide: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false, 
+  },
+  AvlMrng: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true, 
+  },
+  AvlAn: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true, 
+  },
+  AvlEve: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true, 
+  },
   preorderQuantity: {
     type: DataTypes.INTEGER,
-    defaultValue: 0, // Default preorder quantity to 0
+    defaultValue: 0, 
   },
 });
 
 Item.belongsTo(Category, { foreignKey: 'category_id' });
+Item.belongsTo(Shop,{ foreignKey: 'Shop_id' })
 
 module.exports = Item;
