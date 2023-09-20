@@ -6,7 +6,7 @@ const { authenticateToken, authorizeAdmin ,authorizeUser } = require('../middlew
 // const isUser = require('../middleware/authorization').isUser;
 // Create a new shop
 // router.post('/',shopController.upload, shopController.createShop);
-router.post('/create-shop',authenticateToken,authorizeAdmin, shopController.upload, shopController.createShop);
+router.post('/create-shop',authenticateToken, shopController.upload, shopController.createShop);
 
  
 // Read all shops
