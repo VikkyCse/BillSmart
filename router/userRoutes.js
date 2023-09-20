@@ -21,7 +21,7 @@ router.get('/rfid/:id',authenticateToken, userController.getUserByRFId);
 router.get('/:user_name',authenticateToken,authorizeAdmin, userController.getUserByUserName);
 
 // Read a specific user by ID (accessible to all)
-router.get('/id/:id',authenticateToken,authorizeAdmin, userController.getUserById);
+router.get('/id/:id',authenticateToken, userController.getUserById);
 
 // Update a user by ID (accessible to all)
 router.put('/:id',authenticateToken,authorizeAdmin, userController.updateUser);

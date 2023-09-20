@@ -47,7 +47,7 @@ app.use('/transaction',transactionRoutes);
 app.use('/Images',express.static('./Images'))
 
 
-const PORT = 8000;
+const PORT = 4000;
 app.listen(PORT, async () => {
   console.log(`Server running on http://localhost:${PORT}`);
  await sequelize.authenticate()/// alter - force

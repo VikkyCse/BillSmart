@@ -8,6 +8,7 @@ const CartItem = require('../models/Cart_Items');
 const { Op } = require('sequelize');
 const Item = require('../models/Item');
 const sequelize = require('../models/database');
+const Naturals = require('../models/Naturals');
 const currentDate = new Date();
 
 const createTransaction = async (req, res) => {
@@ -129,7 +130,6 @@ const checkQuantity = async (req, res) => {
     for (const cartItem of cartItems) {
       const { itemId, quantity } = cartItem;
       const item = await Item.findByPk(itemId);
- 
 
       if (!item) {
         insufficientItems.push({ itemId, name: 'Item not found', availableQuantity: 0, quantity });
@@ -158,9 +158,12 @@ const createTransactionByUser = async (req, res) => {
     Amount,
     user_id,
     coupon_id,
-    cartItems //collection
+    cartItems,
+    NaturalItems,
+    Iscompleted
   } = req.body;
-
+  const currenDate = new Date();
+  
   try {
     const user = await User.findByPk(user_id);
     if (!user) {
@@ -168,11 +171,135 @@ const createTransactionByUser = async (req, res) => {
     }
 
     const insufficientItems = [];
+    const AllTransactions = [];
 
     await sequelize.transaction(async (t) => {
       // Calculate the total quantity and price for the items being ordered
       let totalQuantity = 0;
       let totalPrice = 0;
+      // Create a new order
+      
+      const newOrder = await Order.create({ transaction: t });
+
+    if (NaturalItems.length == 1){
+      const availableItem = await Item.findByPk(NaturalItems[0].itemId)
+      if (user.amount < availableItem.price) {
+        return res.status(200).json({ error: 'Insufficient balance' });
+      }
+
+      if(availableItem==null){
+        return res.status(200).json({ error: 'Item Not Found' });
+        
+      }
+
+      if (user.isHosteller != true) {
+  
+        if (user.amount < Amount) {
+          return res.status(200).json({ error: 'Insufficient balance' });
+        }
+         else{
+
+          const Natorder = await Order.create({ transaction: t });
+          const NaturalItem = {
+            Item_id: availableItem.id,
+            Quantity: 1,
+            orderId: Natorder.id,
+            cost : availableItem.price
+          };
+          await OrderItem.create(NaturalItem, { transaction: t });
+          await Naturals.create({ user_id, time:currenDate ,Amount:availableItem.price },{ transaction: t });
+
+          const naturaldayscolarTransaction = await Transaction.create({
+            Amount: availableItem.price,
+            Transaction_Time: currenDate,
+            Is_completed: Iscompleted,
+            order_id: Natorder.id, 
+            transactiontype: user.gender==0? 7:6, 
+            user_id, 
+          },{ transaction: t });
+          AllTransactions.push(naturaldayscolarTransaction)
+          user.amount -=  availableItem.price;
+          await user.save({ transaction: t });
+        }
+      }
+
+    else{
+
+        if (user.gender == 0) {
+         
+          if (user.natural_amt < availableItem.price) {
+            return res.status(200).json({ error: 'Insufficient balance' });
+        }
+        user.natural_amt -= availableItem.price;
+        await user.save({ transaction: t });
+        
+        const Natorder = await Order.create({ transaction: t });
+        const NaturalItem = {
+          Item_id: availableItem.id,
+          Quantity: 1,
+          orderId: Natorder.id,
+          cost : availableItem.price
+        };
+
+        
+        await OrderItem.create(NaturalItem, { transaction: t });
+        
+        await Naturals.create({ user_id, time:currenDate ,Amount:availableItem.price },{ transaction: t });
+        
+        const naturalWomanTransaction = await Transaction.create({
+          Amount: availableItem.price,
+          Transaction_Time: currenDate,
+          Is_completed: Iscompleted,
+          order_id: Natorder.id, 
+          transactiontype: 2, 
+          user_id, 
+        },{ transaction: t });
+        console.log(naturalWomanTransaction)
+        AllTransactions.push(naturalWomanTransaction)
+      } else {
+        // const currentDate = new Date();
+        const lastEntry = await Naturals.findOne({
+          where: {
+            user_id,
+            time: {
+              [Op.gte]: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
+              [Op.lt]: new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1),
+            },
+          },
+        });
+  
+        if (!lastEntry) {
+
+          
+        const Natorder = await Order.create({ transaction: t });
+        const NaturalItem = {
+          Item_id: availableItem.id,
+          Quantity: 1,
+          orderId: Natorder.id,
+          cost : availableItem.price
+        };
+        await OrderItem.create(NaturalItem, { transaction: t });
+
+        await Naturals.create({ user_id, time:currenDate, Amount: availableItem.price },{ transaction: t });
+        const createdTransaction = await Transaction.create({
+            Amount:availableItem.price,
+            Transaction_Time: currenDate,
+            Is_completed: true,
+            order_id: Natorder.id, 
+            transactiontype: 5, 
+            user_id, 
+          },{ transaction: t });
+          AllTransactions.push(createdTransaction)
+        } else {
+          return res.status(200).json({ error: 'Boys can only have one Naturals entry per month' });
+        }
+      }
+    }
+  }
+
+  if(cartItems.length>=1){
+
+  
 
       for (const item of cartItems) {
         const { itemId, quantity , cost} = item;
@@ -205,21 +332,16 @@ const createTransactionByUser = async (req, res) => {
         });
       }
 
-      console.log(totalPrice)
-      if (Amount != totalPrice) {
-        return res.status(200).json({ error: 'Try Again' });
-      }
 
-      if (user.amount < totalPrice) {
+      else if (user.amount < totalPrice) {
         return res.status(200).json({ error: 'Insufficient balance' });
       }
 
-      // Deduct the total price from the user's balance
+      else{
       user.amount -= totalPrice;
       await user.save({ transaction: t });
 
-      // Create a new order
-      const newOrder = await Order.create({ transaction: t });
+      
 
       // Create order items associated with the new order
       const orderItems = cartItems.map(item => ({
@@ -232,19 +354,22 @@ const createTransactionByUser = async (req, res) => {
       await OrderItem.bulkCreate(orderItems, { transaction: t });
 
       // Create a new transaction record
-      const transaction = await Transaction.create({
+      const transactionitem = await Transaction.create({
         Amount: totalPrice,
         Transaction_Time : currentDate,
-        Is_completed:false,
+        Is_completed:Iscompleted,
         user_id,
         coupon_id,
         order_id: newOrder.id,
         transactiontype:3
       }, { transaction: t });
+      AllTransactions.push(transactionitem)
+    }}
 
-      res.status(201).json(transaction.id);
+      res.status(201).json(AllTransactions);
     });
   } catch (error) {
+
     console.error(error);
     res.status(200).json({ error: 'Error creating the transaction'  });
   }
@@ -255,7 +380,7 @@ const getAllTransactions = async (req, res) => {
     const transactions = await Transaction.findAll();
     res.status(200).json(transactions);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching transactions' });
+    res.status(200).json({ error: 'Error fetching transactions' });
   }
 };
 
@@ -276,7 +401,7 @@ const getTransactionById = async (req, res) => {
   try {
     const transaction = await Transaction.findByPk(transactionId);
     if (!transaction) {
-      return res.status(404).json({ message: 'Transaction not found' });
+      return res.status(404).json({ error: 'Transaction not found' });
     }
     res.status(200).json(transaction);
   } catch (error) {
@@ -415,6 +540,88 @@ const getOrderItemsByOrderId = async (req, res) => {
 
 
 
+// Controller to fetch data by Item ID
+async function fetchDataByItemId(req, res) {
+  try {
+    const itemId = req.params.itemId;
+
+    const orders = await OrderItem.findAll({
+      where: {
+        Item_id: itemId,
+      },
+    });
+
+    res.status(200).json({ data: orders });
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+// Controller to fetch data by date
+async function fetchDataByDate(req, res) {
+  try {
+    const date = req.params.date;
+
+    const orders = await OrderItem.findAll({
+      where: {
+        createdAt: {
+          [Op.between]: [new Date(date), new Date(date + ' 23:59:59')],
+        },
+      },
+    });
+
+    res.status(200).json({ data: orders });
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+
+async function fetchDataWithinDateSpan(req, res) {
+  try {
+    const { startDate, endDate } = req.query;
+
+    const orders = await OrderItem.findAll({
+      where: {
+        createdAt: {
+          [Op.between]: [new Date(startDate), new Date(endDate)],
+        },
+      },
+    });
+
+    res.status(200).json({ data: orders });
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+
+// Controller to fetch data within a particular date span for a specific item
+async function fetchDataByItemAndDateSpan(req, res) {
+  try {
+    const { itemId, startDate, endDate } = req.query;
+
+    const orders = await OrderItem.findAll({
+      where: {
+        Item_id: itemId,
+        createdAt: {
+          [Sequelize.Op.between]: [new Date(startDate), new Date(endDate)],
+        },
+      },
+    });
+
+    res.status(200).json({ data: orders });
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+
+
 
 
 module.exports = {
@@ -428,5 +635,9 @@ module.exports = {
   createTransactionByUser,
   checkQuantity,
   getAllTransactionsbyUser,
-  getOrderItemsByOrderId
+  getOrderItemsByOrderId,
+  fetchDataByItemId,
+  fetchDataByDate,
+  fetchDataWithinDateSpan,
+  fetchDataByItemAndDateSpan,
 };

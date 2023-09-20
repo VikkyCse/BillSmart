@@ -29,10 +29,10 @@ const Transaction = sequelize.define('Transaction', {
     type: DataTypes.INTEGER(1),
     allowNull: false,
   },
-  //1-recharge 2-natural , 3-order , 4 -refund
-  // transaction_by: {
-  //   type: DataTypes.UUID, 
-  // },
+  //1-recharge , 2-naturalGirls , 3-order , 4 -refund , 5-naturalBoys , 6-naturalDayscolarBoys , 7-naturalDayscolarGirls
+  transaction_by: {
+    type: DataTypes.UUID, 
+  },
 });
 
 Transaction.belongsTo(User, { foreignKey: 'user_id' });

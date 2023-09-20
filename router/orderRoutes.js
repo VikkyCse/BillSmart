@@ -8,7 +8,7 @@ const { authenticateToken, authorizeAdmin ,authorizeUser } = require('../middlew
 router.post('/orders',authenticateToken, orderController.createOrder);
 
 // Read all orders
-router.get('/orders',authenticateToken,authorizeAdmin, orderController.getAllOrders);
+router.get('/orders',authenticateToken, orderController.getAllOrders);
 
 // Read a specific order by ID
 router.get('/orders/:id',authenticateToken, orderController.getOrderById);

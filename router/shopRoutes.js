@@ -10,7 +10,7 @@ router.post('/create-shop',authenticateToken,authorizeAdmin, shopController.uplo
 
  
 // Read all shops
-router.get('/',authenticateToken,authorizeAdmin, shopController.getAllShops);
+router.get('/',authenticateToken, shopController.getAllShops);
  
 // Read a specific shop by ID
 router.get('/:id',authenticateToken, shopController.getShopById);

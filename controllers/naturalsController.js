@@ -65,6 +65,11 @@ const createNaturalsEntry = async (req, res) => {
     res.status(500).json({ error: 'An error occurred' });
   }
 };
+
+
+
+
+
 // Read all naturals entries
 // const getAllNaturalsEntries = async (req, res) => {
 //   try {

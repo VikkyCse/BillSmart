@@ -12,6 +12,9 @@ const Naturals = sequelize.define('Naturals', {
   time: {
     type: DataTypes.DATE,
   },
+  Amount: {
+    type: DataTypes.INTEGER,
+  },
 });
 
 Naturals.belongsTo(User, { foreignKey: 'user_id' });

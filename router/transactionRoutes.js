@@ -26,4 +26,16 @@ router.delete('/:id',authenticateToken, transactionController.deleteTransaction)
 //refund a transaction
 router.post('/refund',authenticateToken, transactionController.refund);
 
+// Fetch data by Item ID
+router.get('/fetchDataByItemId/:itemId', transactionController.fetchDataByItemId);
+
+// Fetch data by Date
+router.get('/fetchDataByDate/:date', transactionController.fetchDataByDate);
+
+// Fetch data within a Date Span
+router.get('/fetchDataWithinDateSpan', transactionController.fetchDataWithinDateSpan);
+
+// Fetch data by Item and within a Date Span
+router.get('/fetchDataByItemAndDateSpan', transactionController.fetchDataByItemAndDateSpan);
+
 module.exports = router;

@@ -56,7 +56,7 @@ const login = async (req, res) => {
       expiresIn: '1d', // Expiry time set to 1 day
     });
 
-    res.status(200).json({ token });
+    res.status(200).json({ token , id:user.id });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error logging in' });
