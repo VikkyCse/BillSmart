@@ -19,11 +19,18 @@ const createItem = async (req, res) => {
     }
     let info1={
       name:req.body.name,
-      veg:req.body.veg,
+      veg:req.body.veg || false,
       image:req.file.path,
       price:req.body.price,
       category_id: category.id,
-      quantity:req.body.quantity
+      quantity:req.body.quantity,
+      availableForPreorder:req.body.availableForPreorder || false ,
+      preorderQuantity:req.body.preorderQuantity || 0,
+      Hide:req.body.Hide || false,
+      AvlMrng : req.body.AvlMrng || true,
+      AvlAn: req.body.AvlAn || true,
+      AvlEve: req.body.AvlEve || true,
+      Shop_id: req.body.Shop_id,
     }
     const item = await Item.create(info1);
     res.status(201).send(item);
@@ -92,20 +99,21 @@ const getItemById = async (req, res) => {
 const updateItem = async (req, res) => {
   try {
     const itemId = req.params.id;
-    const { name, veg, price, quantity, categoryname } = req.body; // Extract categoryname
-    const category = await Category.findOne({ where: { name: categoryname } }); // Use categoryname
+    const Item= await Item.findByPk(itemId)
 
-    if (!category) {
-      res.status(200).json({ error: 'Category not found' });
-      return;
-    }
 
     let updateData = {
-      name,
-      veg,
-      price,
-      category_id: category.id,
-      quantity
+      name:req.body.name || Item.name,
+      veg:req.body.veg || Item.veg,
+      price:req.body.price || Item.price,
+      quantity:req.body.quantity || Item.quantity,
+      availableForPreorder:req.body.availableForPreorder || Item.availableForPreorder ,
+      preorderQuantity:req.body.preorderQuantity || Item.preorderQuantity,
+      Hide:req.body.Hide || Item.Hide,
+      AvlMrng : req.body.AvlMrng || Item.AvlMrng,
+      AvlAn: req.body.AvlAn || Item.AvlAn,
+      AvlEve: req.body.AvlEve || Item.AvlEve,
+     
     };
 
     if (req.file) {
@@ -125,7 +133,7 @@ const updateItem = async (req, res) => {
   } catch (err) {
     console.error('Error updating the item:', err);
     res.status(500).json({ error: 'Error updating the item' });
-  }
+  } 
 };
 
 
