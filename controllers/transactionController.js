@@ -941,7 +941,7 @@ async function fetchDataByItemAndDateSpan(req, res) {
       where: {
         Item_id: itemId,
         createdAt: {
-          [Sequelize.Op.between]: [new Date(startDate), new Date(endDate)],
+          [Op.between]: [new Date(startDate), new Date(endDate)],
         },
       },
     });

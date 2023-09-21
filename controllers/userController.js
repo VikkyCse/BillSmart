@@ -84,6 +84,20 @@ const updateUser = async (req, res) => {
   }
 };
 
+const updateRfid = async (req, res) => {
+  try {
+    const rollNo = req.params.rollNo;
+    const { rfid } = req.body;
+    const updatedUser = await User.update(
+      { rfid },
+      { where: { rollNo: rollNo } }
+    );
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    res.status(500).json({ error: 'Error updating the user' });
+  }
+};
+
 const updateUserPassword = async (req, res) => {
   try {
     const userId = req.params.id; // Extract user ID from the request parameters
@@ -209,5 +223,6 @@ module.exports = {
   updateUserPassword,
   getUserByRFId,
   Recharge,
-  getUserByUserName
+  getUserByUserName,
+  updateRfid
 };

@@ -10,7 +10,7 @@ router.post('/create',authenticateToken, userController.createUser);
 router.get('/login',authenticateToken, userController.loginUser);
 
 // Read all users (accessible to admins only)
-router.get('/',authenticateToken, authorizeAdmin, userController.getAllUsers);
+router.get('/',authenticateToken, userController.getAllUsers);
 // router.get('/',authenticateToken,userController.getAllUsers);
 
 
@@ -18,19 +18,20 @@ router.get('/',authenticateToken, authorizeAdmin, userController.getAllUsers);
 router.get('/rfid/:id',authenticateToken, userController.getUserByRFId);
 
 // Read a specific user by username (accessible to all)
-router.get('/:user_name',authenticateToken,authorizeAdmin, userController.getUserByUserName);
+router.get('/:user_name',authenticateToken, userController.getUserByUserName);
 
 // Read a specific user by ID (accessible to all)
 router.get('/id/:id',authenticateToken, userController.getUserById);
 
 // Update a user by ID (accessible to all)
-router.put('/:id',authenticateToken,authorizeAdmin, userController.updateUser);
+router.put('/:id',authenticateToken, userController.updateUser);
+router.put('/updaterfid/:rollNo',authenticateToken, userController.updateRfid);
 
 // Recharge with RFID (accessible to all)
-router.put('/',authenticateToken,authorizeAdmin, userController.Recharge);
+router.put('/',authenticateToken, userController.Recharge);
 
 // Delete a user by ID (accessible to all)
-router.delete('/:id',authenticateToken,authorizeAdmin, userController.deleteUser);
+router.delete('/:id',authenticateToken, userController.deleteUser);
 
 // Update password by user (accessible to all)
 router.put('/:id/update-password',authenticateToken, userController.updateUserPassword);

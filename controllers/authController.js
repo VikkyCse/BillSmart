@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User'); // Import your User model
+const activeTokens = {};
 
 // Registration controller
 const register = async (req, res) => {
@@ -17,15 +18,10 @@ const register = async (req, res) => {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create a new user  
-    const newUser = await User.create({ User_name, password: hashedPassword, gender, isHosteller, rollNo });
+    await User.create({ User_name, password: hashedPassword, usertype:0, gender, isHosteller, rollNo });
 
-    // Generate a JWT token with an expiry time of 1 day
-    const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET_KEY, {
-      expiresIn: '30d', // Expiry time set to 1 day
-    });
-
-    res.status(201).json({ token });
+  
+    res.status(201).json({ message : "success"});
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error registering user' });
@@ -41,7 +37,7 @@ const login = async (req, res) => {
     const user = await User.findOne({ where: { User_name } });
 
     if (!user) {
-      return res.status(401).json({ error: 'Invalid username or password' });
+      return res.status(401).json({ error: 'Invalid username' });
     }
 
     // Compare the provided password with the hashed password in the database
@@ -53,7 +49,7 @@ const login = async (req, res) => {
 
     // Generate a JWT token with an expiry time of 1 day
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY, {
-      expiresIn: '30d', // Expiry time set to 1 day
+      expiresIn: '4y', 
     });
 
     res.status(200).json({ token , id:user.id });
@@ -63,7 +59,69 @@ const login = async (req, res) => {
   }
 };
 
+const loginwithRfid = async (req, res) => {
+  try {
+    const { rfid } = req.body;
+
+    let user = null;
+
+    // Check if authentication method is RFID
+    if (rfid) {
+      // Fetch the user associated with the RFID card
+      user = await User.findOne({ where: { rfid } });
+
+      if (!user) {
+        return res.status(401).json({ error: 'Invalid RFID card' });
+      }
+    } 
+   
+    // Generate a JWT token with an expiry time of 1 day
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY, {
+      expiresIn: '30m', 
+    });
+
+    activeTokens[rfid] = 1;
+
+    res.status(200).json({ token, id: user.id });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error logging in' });
+  }
+};
+
+const logoutwithRfid = async (req, res) => {
+  try {
+    const { rfid } = req.body;
+
+    if (rfid in activeTokens) {
+      delete activeTokens[rfid];
+    }
+
+    
+    res.status(200).json({ message:"success" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error logging in' });
+  }
+};
+
+
+const clearActiveTokens = () => {
+
+  for (const key in activeTokens) {
+    delete activeTokens[key];
+  }
+  console.log('All active tokens cleared.');
+};
+
+
+setInterval(clearActiveTokens, 600000);
+
+
+
 module.exports = {
   register,
   login,
+  loginwithRfid,
+  logoutwithRfid
 };
