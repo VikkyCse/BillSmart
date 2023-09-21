@@ -68,57 +68,57 @@ const createTransaction = async (req, res) => {
 };
 
 
-const createTransactionByAdmin = async (req, res) => {
-  const {
-    Amount,
-    Transaction_Time,
-    Is_completed,
-    user_id,
-    coupon_id,
-    Type,
-    items // An array of objects containing item_id and quantity
-  } = req.body;
+// const createTransactionByAdmin = async (req, res) => {
+//   const {
+//     Amount,
+//     Transaction_Time,
+//     Is_completed,
+//     user_id,
+//     coupon_id,
+//     Type,
+//     items // An array of objects containing item_id and quantity
+//   } = req.body;
 
-  try {
-    const user = await User.findByPk(user_id);
-    if (!user) {
-      return res.status(400).json({ error: 'User not found' });
-    }
-    if (user.Amount < Amount) {
-      return res.status(400).json({ error: 'Insufficient balance' });
-    }
+//   try {
+//     const user = await User.findByPk(user_id);
+//     if (!user) {
+//       return res.status(400).json({ error: 'User not found' });
+//     }
+//     if (user.Amount < Amount) {
+//       return res.status(400).json({ error: 'Insufficient balance' });
+//     }
 
-    await sequelize.transaction(async (t) => {
-      user.Amount -= Amount;
-      await user.save({ transaction: t });
+//     await sequelize.transaction(async (t) => {
+//       user.Amount -= Amount;
+//       await user.save({ transaction: t });
 
-      const newOrder = await Order.create({ transaction: t });
+//       const newOrder = await Order.create({ transaction: t });
 
-      const orderItems = items.map(item => ({
-        Item_id: item.item_id,
-        Count: item.quantity,
-        orderId: newOrder.id
-      }));
+//       const orderItems = items.map(item => ({
+//         Item_id: item.item_id,
+//         Count: item.quantity,
+//         orderId: newOrder.id
+//       }));
 
-      await OrderItem.bulkCreate(orderItems, { transaction: t });
+//       await OrderItem.bulkCreate(orderItems, { transaction: t });
 
-      const transaction = await Transaction.create({
-        Amount,
-        Transaction_Time ,
-        Is_completed,
-        user_id,
-        coupon_id,
-        order_id: newOrder.id,
-        Type
-      }, { transaction: t });
+//       const transaction = await Transaction.create({
+//         Amount,
+//         Transaction_Time ,
+//         Is_completed,
+//         user_id,
+//         coupon_id,
+//         order_id: newOrder.id,
+//         Type
+//       }, { transaction: t });
 
-      res.status(201).json(transaction);
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error creating the transaction' });
-  }
-};
+//       res.status(201).json(transaction);
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Error creating the transaction' });
+//   }
+// };
 
 const checkQuantity = async (req, res) => {
   try { 
@@ -149,7 +149,104 @@ const checkQuantity = async (req, res) => {
 
 }
 
+const createTransactionByAdmin = async (req, res) => {
+  const {
+    user_id,
+    coupon_id,
+    cartItems,
+    transaction_by,
+  } = req.body;
 
+  
+  try {
+    const user = await User.findByPk(user_id);
+    if (!user) {
+      return res.status(200).json({ error: 'User not found' });
+    }
+
+    const insufficientItems = [];
+    const AllTransactions = [];
+
+    await sequelize.transaction(async (t) => {
+      // Calculate the total quantity and price for the items being ordered
+      let totalQuantity = 0;
+      let totalPrice = 0;
+      // Create a new order
+      
+      const newOrder = await Order.create({ transaction: t });
+
+      for (const item of cartItems) {
+        const { itemId, quantity } = item;
+
+        // Check if the item exists and if its available quantity is sufficient
+        const availableItem = await Item.findByPk(itemId);
+        if (!availableItem || availableItem.quantity < quantity) {
+          // If insufficient quantity, add details to the insufficientItems array
+          insufficientItems.push({
+            itemId,
+            name: availableItem ? availableItem.name : 'Item not found',
+            available_quantity: availableItem ? availableItem.quantity : 0,
+            ordered_quantity: quantity,
+          });
+        } else {
+          totalQuantity += quantity;
+          totalPrice += availableItem.price * quantity;
+
+          // Deduct the ordered quantity from the available item quantity
+          availableItem.quantity -= quantity;
+          await availableItem.save({ transaction: t });
+        }
+      }
+
+      if (insufficientItems.length > 0) {
+        // Respond with details of insufficient quantity items
+        return res.status(200).json({
+          error: 'Insufficient quantity for one or more items',
+          insufficientItems,
+        });
+      }
+
+
+      else if (user.amount < totalPrice) {
+        return res.status(200).json({ error: 'Insufficient balance' });
+      }
+
+      else{
+      user.amount -= totalPrice;
+      await user.save({ transaction: t });
+      
+      // Create order items associated with the new order
+      const orderItems = cartItems.map(item => ({
+        Item_id: item.itemId,
+        Quantity: item.quantity,
+        orderId: newOrder.id,
+        cost : item.cost
+      }));
+
+      await OrderItem.bulkCreate(orderItems, { transaction: t });
+
+      // Create a new transaction record
+      const transactionitem = await Transaction.create({
+        Amount: totalPrice,
+        Transaction_Time : currentDate,
+        Is_completed:true,
+        user_id,
+        coupon_id,
+        order_id: newOrder.id,
+        transactiontype:3,
+        transaction_by:transaction_by,
+      }, { transaction: t });
+      AllTransactions.push(transactionitem)
+    }
+
+      res.status(201).json(AllTransactions);
+    });
+  } catch (error) {
+
+    console.error(error);
+    res.status(200).json({ error: 'Error creating the transaction'  });
+  }
+};
 
 
 

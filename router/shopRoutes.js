@@ -15,8 +15,16 @@ router.get('/',authenticateToken, shopController.getAllShops);
 // Read a specific shop by ID
 router.get('/:id',authenticateToken, shopController.getShopById);
 // Define the route for getting categories by user ID
- 
 
+router.get('/forapp',authenticateToken, shopController.getAllShopForUser);
+ 
+router.get('/special-shops',authenticateToken, shopController.getAllSpecialShopForUser);
+
+// Route for getting all normal shops for a user
+router.get('/normal-shops',authenticateToken, shopController.getAllNormalShopForUser);
+
+// Route for getting a shop by name
+router.get('/byName/:name',authenticateToken, shopController.getShopbyname);
 
 // Update a shop by ID
 // router.put('/:id', shopController.updateShop);

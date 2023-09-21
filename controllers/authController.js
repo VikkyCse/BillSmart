@@ -22,7 +22,7 @@ const register = async (req, res) => {
 
     // Generate a JWT token with an expiry time of 1 day
     const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET_KEY, {
-      expiresIn: '1d', // Expiry time set to 1 day
+      expiresIn: '30d', // Expiry time set to 1 day
     });
 
     res.status(201).json({ token });
@@ -53,7 +53,7 @@ const login = async (req, res) => {
 
     // Generate a JWT token with an expiry time of 1 day
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY, {
-      expiresIn: '1d', // Expiry time set to 1 day
+      expiresIn: '30d', // Expiry time set to 1 day
     });
 
     res.status(200).json({ token , id:user.id });

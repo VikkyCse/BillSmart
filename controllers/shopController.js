@@ -8,8 +8,7 @@ const Category = require('../models/Category');
 // Create a new shop
 const createShop = async (req, res) => {
   try {
-    //  const { name} = req.body;
-    // const {image}=req.file.path;
+
     let info={
       image:req.file.path,
       name:req.body.name,
@@ -34,6 +33,69 @@ const getAllShops = async (req, res) => {
     res.status(500).json({ error: 'Error fetching shops' , err});
   } 
 }; 
+const getAllSpecialShopForUser = async (req, res) => {
+  try {
+    const shops = await Shop.findAll({
+      where: {
+        isSpecial: true,
+        Hide: false,
+      },
+      attributes: ['id','name', 'image'],
+    });
+
+    res.status(200).json(shops);
+  } catch (err) {
+    res.status(500).json({ error: 'Error fetching shops', err });
+  }
+};
+
+
+const getAllShopForUser = async (req, res) => {
+  try {
+  
+    const shops = await Shop.findAll({
+      where: {
+        Hide: false,
+      },     
+    });
+    console.log(shops)
+    res.status(200).json(shops);
+  } catch (err) {
+    res.status(500).json({ error: 'Error fetching shops', err });
+  }
+};
+
+
+const getAllNormalShopForUser = async (req, res) => {
+  try {
+    const shops = await Shop.findAll({
+      where: {
+        isSpecial: false,
+        Hide: false,
+      },
+      attributes: ['id','name', 'image'],
+    });
+
+    res.status(200).json(shops);
+  } catch (err) {
+    res.status(500).json({ error: 'Error fetching shops', err });
+  }
+};
+
+const getShopbyname = async (req, res) => {
+  try {
+    const shops = await Shop.findAll({
+      where: {
+        name: req.params.name,
+        Hide: false,
+      },
+    });
+
+    res.status(200).json(shops);
+  } catch (err) {
+    res.status(500).json({ error: 'Error fetching shops', err });
+  }
+};
  
 // Read a specific shop by ID
 const getShopById = async (req, res) => {
@@ -160,5 +222,9 @@ module.exports = {
   getShopById,
   updateShop,
   deleteShop,
-  upload
+  upload,
+  getAllSpecialShopForUser,
+  getShopbyname,
+  getAllNormalShopForUser,
+  getAllShopForUser
 };
