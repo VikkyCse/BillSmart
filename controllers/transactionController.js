@@ -247,6 +247,151 @@ const createTransactionByAdmin = async (req, res) => {
     res.status(200).json({ error: 'Error creating the transaction'  });
   }
 };
+const createNaturalTransactionByAdmin = async (req, res) => {
+  const {
+    Amount,
+    user_id,
+    coupon_id,
+    NaturalItems,
+    
+  } = req.body;
+  const currenDate = new Date();
+  
+  try {
+    const user = await User.findByPk(user_id);
+    if (!user) {
+      return res.status(200).json({ error: 'User not found' });
+    }
+
+    const AllTransactions = [];
+
+    await sequelize.transaction(async (t) => {
+           
+      
+
+    if (NaturalItems.length == 1){
+      const availableItem = await Item.findByPk(NaturalItems[0].itemId)
+      if (user.amount < availableItem.price) {
+        return res.status(200).json({ error: 'Insufficient balance' });
+      }
+
+      if(availableItem==null){
+        return res.status(200).json({ error: 'Item Not Found' });
+        
+      }
+
+      if (user.isHosteller != true) {
+  
+        if (user.amount < Amount) {
+          return res.status(200).json({ error: 'Insufficient balance' });
+        }
+         else{
+
+          const Natorder = await Order.create({ transaction: t });
+          const NaturalItem = {
+            Item_id: availableItem.id,
+            Quantity: 1,
+            orderId: Natorder.id,
+            cost : availableItem.price
+          };
+          await OrderItem.create(NaturalItem, { transaction: t });
+          await Naturals.create({ user_id, time:currenDate ,Amount:availableItem.price },{ transaction: t });
+
+          const naturaldayscolarTransaction = await Transaction.create({
+            Amount: availableItem.price,
+            Transaction_Time: currenDate,
+            Is_completed: Iscompleted,
+            order_id: Natorder.id, 
+            transactiontype: user.gender==0? 7:6, 
+            user_id, 
+          },{ transaction: t });
+          AllTransactions.push(naturaldayscolarTransaction)
+          user.amount -=  availableItem.price;
+          await user.save({ transaction: t });
+        }
+      }
+
+    else{
+
+        if (user.gender == 0) {
+         
+          if (user.natural_amt < availableItem.price) {
+            return res.status(200).json({ error: 'Insufficient balance' });
+        }
+        user.natural_amt -= availableItem.price;
+        await user.save({ transaction: t });
+        
+        const Natorder = await Order.create({ transaction: t });
+        const NaturalItem = {
+          Item_id: availableItem.id,
+          Quantity: 1,
+          orderId: Natorder.id,
+          cost : availableItem.price
+        };
+
+        
+        await OrderItem.create(NaturalItem, { transaction: t });
+        
+        await Naturals.create({ user_id, time:currenDate ,Amount:availableItem.price },{ transaction: t });
+        
+        const naturalWomanTransaction = await Transaction.create({
+          Amount: availableItem.price,
+          Transaction_Time: currenDate,
+          Is_completed: Iscompleted,
+          order_id: Natorder.id, 
+          transactiontype: 2, 
+          user_id, 
+        },{ transaction: t });
+        console.log(naturalWomanTransaction)
+        AllTransactions.push(naturalWomanTransaction)
+      } else {
+        // const currentDate = new Date();
+        const lastEntry = await Naturals.findOne({
+          where: {
+            user_id,
+            time: {
+              [Op.gte]: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
+              [Op.lt]: new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1),
+            },
+          },
+        });
+  
+        if (!lastEntry) {
+
+          
+        const Natorder = await Order.create({ transaction: t });
+        const NaturalItem = {
+          Item_id: availableItem.id,
+          Quantity: 1,
+          orderId: Natorder.id,
+          cost : availableItem.price
+        };
+        await OrderItem.create(NaturalItem, { transaction: t });
+
+        await Naturals.create({ user_id, time:currenDate, Amount: availableItem.price },{ transaction: t });
+        const createdTransaction = await Transaction.create({
+            Amount:availableItem.price,
+            Transaction_Time: currenDate,
+            Is_completed: true,
+            order_id: Natorder.id, 
+            transactiontype: 5, 
+            user_id, 
+          },{ transaction: t });
+          AllTransactions.push(createdTransaction)
+        } else {
+          return res.status(200).json({ error: 'Boys can only have one Naturals entry per month' });
+        }
+      }
+    }
+  }
+      res.status(201).json(AllTransactions);
+    });
+  } catch (error) {
+
+    console.error(error);
+    res.status(200).json({ error: 'Error creating the transaction'  });
+  }
+};
 
 
 
@@ -485,6 +630,20 @@ const getAllTransactionsbyUser = async (req, res) => {
   try {
     const userid = req.params.id;
     const transactions = await Transaction.findAll({ where: { user_id: userid } });
+    res.status(200).json(transactions);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching transactions' });
+  }
+};
+const getIncompleteTransactionsbyUser = async (req, res) => {
+  try {
+    const userid = req.params.id;
+    const transactions = await Transaction.findAll({
+      where: {
+        user_id: userid,
+        Is_completed: 0
+      }
+    });
     res.status(200).json(transactions);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching transactions' });
@@ -737,4 +896,6 @@ module.exports = {
   fetchDataByDate,
   fetchDataWithinDateSpan,
   fetchDataByItemAndDateSpan,
+  getIncompleteTransactionsbyUser,
+  createNaturalTransactionByAdmin
 };

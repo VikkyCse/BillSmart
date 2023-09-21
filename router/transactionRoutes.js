@@ -5,17 +5,23 @@ const { authenticateToken, authorizeAdmin ,authorizeUser } = require('../middlew
 
 // Create a new transaction
 router.post('/',authenticateToken, transactionController.createTransaction);
-router.post('/createTransactionByAdmin',authenticateToken,authorizeAdmin, transactionController.createTransactionByAdmin);
+router.post('/createTransactionByAdmin',authenticateToken, transactionController.createTransactionByAdmin);
 router.post('/createTransactionByUser',authenticateToken, transactionController.createTransactionByUser);
 router.get('/orders/:orderId',authenticateToken, transactionController.getOrderItemsByOrderId);
 router.post('/checkQuantity',authenticateToken, transactionController.checkQuantity);
 
+
+router.post('/createNaturalTransactionByAdmin',authenticateToken, transactionController.createNaturalTransactionByAdmin);
+
 // Read all transactions
 router.get('/',authenticateToken, transactionController.getAllTransactions);
+
+
 
 // Read a specific transaction by ID
 // router.get('/:id', transactionController.getTransactionById);
 router.get('/:id',authenticateToken, transactionController.getAllTransactionsbyUser);
+router.get('/notcompleted/:id',authenticateToken, transactionController.getIncompleteTransactionsbyUser);
 
 // Update a transaction by ID
 router.put('/:id',authenticateToken, transactionController.updateTransaction);
