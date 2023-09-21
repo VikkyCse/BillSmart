@@ -736,41 +736,118 @@ const refund = async (req, res) => {
         await item.save({ transaction: t });
 
         // Remove the order item
-        await orderItem.destroy({ transaction: t });
+        // await orderItem.destroy({ transaction: t });
 
         return res.status(200).json({ message: 'Item refunded successfully' });
-      } else {
-        // Refund the entire transaction
-        const user = await User.findByPk(transaction.user_id, { transaction: t });
-        user.Amount += transaction.Amount;
-        await user.save({ transaction: t });
-
-        const orderItems = await OrderItem.findAll({
-          where: { orderId: transaction.order_id },
-          transaction: t,
-        });
-
-        // Update item quantities and remove order items
-        for (const orderItem of orderItems) {
-          const item = await Item.findByPk(orderItem.Item_id, { transaction: t });
-          if (item) {
-            item.quantity += orderItem.Count;
-            await item.save({ transaction: t });
-          }
-          await orderItem.destroy({ transaction: t });
-        }
-
-        // Delete the transaction
-        await transaction.destroy({ transaction: t });
-
-        return res.status(200).json({ message: 'Transaction refunded successfully' });
       }
+      
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error processing refund' });
   }
 };
+
+
+const refundWithQuantity = async (req, res) => {
+  const { transactionId, itemId } = req.body;
+
+  try {
+    await sequelize.transaction(async (t) => {
+      const transaction = await Transaction.findByPk(transactionId, { transaction: t });
+
+      if (!transaction) {
+        return res.status(404).json({ error: 'Transaction not found' });
+      }
+
+      if (itemId) {
+        const orderItem = await OrderItem.findOne({
+          where: { orderId: transaction.order_id, Item_id: itemId },
+          transaction: t,
+        });
+
+        if (!orderItem) {
+          return res.status(404).json({ error: 'Item not found in the transaction' });
+        }
+
+        const item = await Item.findByPk(itemId, { transaction: t });
+
+        if (!item) {
+          return res.status(404).json({ error: 'Item not found' });
+        }
+
+        // Refund the item
+        const refundedAmount = orderItem.Count * item.price;
+        const user = await User.findByPk(transaction.user_id, { transaction: t });
+        user.Amount += refundedAmount;
+        await user.save({ transaction: t });
+
+        // Update item quantity
+        item.quantity += orderItem.Count;
+        await item.save({ transaction: t });
+
+        // Remove the order item
+        // await orderItem.destroy({ transaction: t });
+
+        return res.status(200).json({ message: 'Item refunded successfully' });
+      }
+
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error processing refund' });
+  }
+};
+const refundWithoutQuantity = async (req, res) => {
+  const { transactionId, itemId } = req.body;
+
+  try {
+    await sequelize.transaction(async (t) => {
+      const transaction = await Transaction.findByPk(transactionId, { transaction: t });
+
+      if (!transaction) {
+        return res.status(404).json({ error: 'Transaction not found' });
+      }
+
+      if (itemId) {
+        const orderItem = await OrderItem.findOne({
+          where: { orderId: transaction.order_id, Item_id: itemId },
+          transaction: t,
+        });
+
+        if (!orderItem) {
+          return res.status(404).json({ error: 'Item not found in the transaction' });
+        }
+
+        const item = await Item.findByPk(itemId, { transaction: t });
+
+        if (!item) {
+          return res.status(404).json({ error: 'Item not found' });
+        }
+
+        // Refund the item
+        const refundedAmount = orderItem.Count * item.price;
+        const user = await User.findByPk(transaction.user_id, { transaction: t });
+        user.Amount += refundedAmount;
+        await user.save({ transaction: t });
+
+        
+        // Remove the order item
+        await orderItem.destroy({ transaction: t });
+
+        return res.status(200).json({ message: 'Item refunded successfully' });
+      }
+
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error processing refund' });
+  }
+};
+
+
+
+
 
 const getOrderItemsByOrderId = async (req, res) => {
   try {
@@ -897,5 +974,7 @@ module.exports = {
   fetchDataWithinDateSpan,
   fetchDataByItemAndDateSpan,
   getIncompleteTransactionsbyUser,
-  createNaturalTransactionByAdmin
+  createNaturalTransactionByAdmin,
+  refundWithQuantity,
+  refundWithoutQuantity
 };

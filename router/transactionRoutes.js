@@ -31,7 +31,8 @@ router.delete('/:id',authenticateToken, transactionController.deleteTransaction)
 
 //refund a transaction
 router.post('/refund',authenticateToken, transactionController.refund);
-
+router.post('/refundwithQty',authenticateToken, transactionController.refundWithQuantity);
+router.post('/refundwithoutQty',authenticateToken, transactionController.refundWithoutQuantity);
 // Fetch data by Item ID
 router.get('/fetchDataByItemId/:itemId', transactionController.fetchDataByItemId);
 
