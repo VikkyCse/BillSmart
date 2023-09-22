@@ -457,6 +457,7 @@ const createTransactionByUser = async (req, res) => {
             order_id: Natorder.id, 
             transactiontype: user.gender==0? 7:6, 
             user_id, 
+            transaction_by:user_id,
           },{ transaction: t });
           AllTransactions.push(naturaldayscolarTransaction)
           user.amount -=  availableItem.price;
@@ -494,6 +495,7 @@ const createTransactionByUser = async (req, res) => {
           order_id: Natorder.id, 
           transactiontype: 2, 
           user_id, 
+          transaction_by:user_id
         },{ transaction: t });
         console.log(naturalWomanTransaction)
         AllTransactions.push(naturalWomanTransaction)
@@ -528,7 +530,8 @@ const createTransactionByUser = async (req, res) => {
             Is_completed: true,
             order_id: Natorder.id, 
             transactiontype: 5, 
-            user_id, 
+            user_id,
+            transaction_by:user_id 
           },{ transaction: t });
           AllTransactions.push(createdTransaction)
         } else {
@@ -602,7 +605,8 @@ const createTransactionByUser = async (req, res) => {
         user_id,
         coupon_id,
         order_id: newOrder.id,
-        transactiontype:3
+        transactiontype:3,
+        transaction_by:user_id
       }, { transaction: t });
       AllTransactions.push(transactionitem)
     }}
@@ -788,7 +792,7 @@ const refundWithQuantity = async (req, res) => {
         // Refund the item
         const refundedAmount = orderItem.Quantity * item.price;
         const user = await User.findByPk(transaction.user_id, { transaction: t });
-        user.Amount += refundedAmount;
+        user.amount += refundedAmount;
         await user.save({ transaction: t });
 
         // Update item quantity
@@ -857,7 +861,7 @@ const refundWithoutQuantity = async (req, res) => {
         // Refund the item
         const refundedAmount = orderItem.Quantity * item.price;
         const user = await User.findByPk(transaction.user_id, { transaction: t });
-        user.Amount += refundedAmount;
+        user.amount += refundedAmount;
         await user.save({ transaction: t });
 
         
