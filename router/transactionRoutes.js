@@ -47,4 +47,11 @@ router.get('/fetchDataWithinDateSpan', transactionController.fetchDataWithinDate
 // Fetch data by Item and within a Date Span
 router.get('/fetchDataByItemAndDateSpan', transactionController.fetchDataByItemAndDateSpan);
 
+
+// ---------------------------------------- ITEM WISE REPORT --------------------------
+router.post('/SingledayItemwiseReport',authenticateToken, transactionController.fetchItemDataByDateSpan);
+router.post('/MultipleDatyItemwiseReport',authenticateToken, transactionController.fetchItemDataForDate);
+
+
 module.exports = router;
+

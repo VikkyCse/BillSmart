@@ -796,7 +796,7 @@ const refundWithQuantity = async (req, res) => {
         await user.save({ transaction: t });
 
         // Update item quantity
-        item.quantity += orderItem.Count;
+        item.quantity += orderItem.Quantity;
         await item.save({ transaction: t });
 
         // Remove the order item
@@ -996,6 +996,95 @@ async function fetchDataByItemAndDateSpan(req, res) {
   }
 }
 
+
+// async function fetchItemByDateSpan(req, res) {
+//   try {
+//     const { startDate, endDate } = req.query;
+
+//     const orders = await OrderItem.findAll({
+//       where: {
+//         createdAt: {
+//           [Op.between]: [new Date(startDate), new Date(endDate)],
+//         },
+//         refunded:0
+//       },
+//     });
+
+    
+
+//     res.status(200).json({ data: orders });
+//   } catch (error) {
+//     console.error('Error fetching data:', error);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// }
+
+
+
+async function fetchItemDataByDateSpan(req, res) {
+  try {
+    const { startDate, endDate } = req.body;
+
+    const orders = await OrderItem.findAll({
+      attributes: [
+        [sequelize.fn('sum', sequelize.col('Quantity')), 'totalQuantity'], 
+      ],
+      include: [
+        {
+          model: Item,
+          attributes: ['name'], 
+        },
+      ],
+      where: {
+        createdAt: {
+          [Op.between]: [new Date(startDate), new Date(endDate)],
+        },
+        refunded : 0
+      },
+      group: ['Item.name'], 
+    });
+
+    res.status(200).json({ data: orders });
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+async function fetchItemDataForDate(req, res) {
+  try {
+    const { date } = req.body; // Date in the format 'YYYY-MM-DD'
+
+    const orders = await OrderItem.findAll({
+      attributes: [
+        [sequelize.fn('sum', sequelize.col('Quantity')), 'totalQuantity'],
+      ],
+      include: [
+        {
+          model: Item,
+          attributes: ['name'],
+        },
+      ],
+      where: {
+        createdAt: {
+          [Op.between]: [new Date(date), new Date(date)],
+        },
+        refunded: 0,
+      },
+      group: ['Item.name'],
+    });
+
+    res.status(200).json({ data: orders });
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+
+
+
+
+
 const Transactioncompletion = async (req, res) => {
   const transactionId = req.params.id;
   try {
@@ -1019,6 +1108,7 @@ const Transactioncompletion = async (req, res) => {
     res.status(500).json({ error: 'Error updating the transaction' });
   }
 };
+
 const getItemForBill = async (req, res) => {
   console.log("enter");
   try {
@@ -1066,5 +1156,7 @@ module.exports = {
   refundWithQuantity,
   refundWithoutQuantity,
   Transactioncompletion,
-  getItemForBill
+  getItemForBill,
+  fetchItemDataByDateSpan,
+  fetchItemDataForDate
 };

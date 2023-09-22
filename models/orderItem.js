@@ -18,8 +18,10 @@ const OrderItem = sequelize.define('OrderItem', {
     },
     refunded:{
         type: DataTypes.INTEGER,
-        defaultValue: false,
+        defaultValue: 0,
     }
+
+    //refund -1 - item with qty   2- item without qty
 });
 
 // Create associations
