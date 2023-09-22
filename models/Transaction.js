@@ -29,7 +29,7 @@ const Transaction = sequelize.define('Transaction', {
     type: DataTypes.INTEGER(1),
     allowNull: false,
   },
-  //1-recharge , 2-naturalGirls , 3-order , 4 -refund , 5-naturalBoys , 6-naturalDayscolarBoys , 7-naturalDayscolarGirls
+  //1-recharge , 2-naturalGirls , 3-order , 4 -refundwithoutqty , 5-naturalBoys , 6-naturalDayscolarBoys , 7-naturalDayscolarGirls , 8 -refundwithqty
   transaction_by: {
     type: DataTypes.UUID, 
   },

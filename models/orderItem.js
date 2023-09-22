@@ -15,6 +15,10 @@ const OrderItem = sequelize.define('OrderItem', {
     },
     cost:{
         type: DataTypes.INTEGER,
+    },
+    refunded:{
+        type: DataTypes.INTEGER,
+        defaultValue: false,
     }
 });
 

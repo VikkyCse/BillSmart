@@ -718,6 +718,10 @@ const refund = async (req, res) => {
           return res.status(404).json({ error: 'Item not found in the transaction' });
         }
 
+        if (orderItem.refunded==true) {
+          return res.status(200).json({ error: 'Already Refunded' });
+        }
+
         const item = await Item.findByPk(itemId, { transaction: t });
 
         if (!item) {
@@ -735,7 +739,8 @@ const refund = async (req, res) => {
         await item.save({ transaction: t });
 
         // Remove the order item
-        // await orderItem.destroy({ transaction: t });
+        await orderItem.update({ refunded: true }, { transaction: t });
+
 
         return res.status(200).json({ message: 'Item refunded successfully' });
       }
@@ -750,7 +755,7 @@ const refund = async (req, res) => {
 
 const refundWithQuantity = async (req, res) => {
   const { transactionId, itemId } = req.body;
-
+  const currenDate = new Date();
   try {
     await sequelize.transaction(async (t) => {
       const transaction = await Transaction.findByPk(transactionId, { transaction: t });
@@ -765,9 +770,14 @@ const refundWithQuantity = async (req, res) => {
           transaction: t,
         });
 
+
         if (!orderItem) {
           return res.status(404).json({ error: 'Item not found in the transaction' });
         }
+        if (orderItem.refunded==true) {
+          return res.status(200).json({ error: 'Already Refunded' });
+        }
+
 
         const item = await Item.findByPk(itemId, { transaction: t });
 
@@ -786,8 +796,19 @@ const refundWithQuantity = async (req, res) => {
         await item.save({ transaction: t });
 
         // Remove the order item
-        // await orderItem.destroy({ transaction: t });
+        await orderItem.update({ refunded: true }, { transaction: t });
 
+        await Transaction.create({
+          Amount: refundedAmount,
+          Transaction_Time: currenDate,
+          Is_completed: 1,
+          order_id: orderItem.id, 
+          transactiontype: 4, 
+          user_id, 
+        },{ transaction: t });
+
+        await orderItem.update({ refunded: true }, { transaction: t });
+        
         return res.status(200).json({ message: 'Item refunded successfully' });
       }
 
@@ -799,7 +820,7 @@ const refundWithQuantity = async (req, res) => {
 };
 const refundWithoutQuantity = async (req, res) => {
   const { transactionId, itemId } = req.body;
-
+  const currenDate = new Date();
   try {
     await sequelize.transaction(async (t) => {
       const transaction = await Transaction.findByPk(transactionId, { transaction: t });
@@ -817,6 +838,11 @@ const refundWithoutQuantity = async (req, res) => {
         if (!orderItem) {
           return res.status(404).json({ error: 'Item not found in the transaction' });
         }
+
+        if (orderItem.refunded==true) {
+          return res.status(200).json({ error: 'Already Refunded' });
+        }
+
 
         const item = await Item.findByPk(itemId, { transaction: t });
 
@@ -832,7 +858,17 @@ const refundWithoutQuantity = async (req, res) => {
 
         
         // Remove the order item
-        await orderItem.destroy({ transaction: t });
+        await orderItem.update({ refunded: true }, { transaction: t });
+
+        await Transaction.create({
+          Amount: refundedAmount,
+          Transaction_Time: currenDate,
+          Is_completed: 1,
+          order_id: orderItem.id, 
+          transactiontype: 4, 
+          user_id, 
+        },{ transaction: t });
+
 
         return res.status(200).json({ message: 'Item refunded successfully' });
       }
