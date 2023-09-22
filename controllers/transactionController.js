@@ -632,12 +632,15 @@ const getAllTransactions = async (req, res) => {
 const getAllTransactionsbyUser = async (req, res) => {
   try {
     const userid = req.params.id;
-    const transactions = await Transaction.findAll({ where: { user_id: userid } });
+    const transactions = await Transaction.findAll({ where: { user_id: userid }, order: [
+      ['updatedAt', 'DESC'],
+  ], });
     res.status(200).json(transactions);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching transactions' });
-  }
+    res.status(500).json({ error: error.message });
+  }
 };
+
 const getIncompleteTransactionsbyUser = async (req, res) => {
   try {
     const userid = req.params.id;
