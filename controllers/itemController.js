@@ -30,7 +30,7 @@ const createItem = async (req, res) => {
       AvlMrng : req.body.AvlMrng || true,
       AvlAn: req.body.AvlAn || true,
       AvlEve: req.body.AvlEve || true,
-      Shop_id: req.body.Shop_id,
+      Shop_id: category.Shop_id,
     }
     const item = await Item.create(info1);
     res.status(201).send(item);
