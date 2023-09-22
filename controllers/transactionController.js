@@ -814,7 +814,7 @@ const refundWithQuantity = async (req, res) => {
           Transaction_Time: currenDate,
           Is_completed: 1,
           order_id: orderItem.id, 
-          transactiontype: 4, 
+          transactiontype: 8, 
           user_id, 
         },{ transaction: t });
 
