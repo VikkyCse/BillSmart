@@ -115,8 +115,9 @@ const updateUserPassword = async (req, res) => {
     // Check if the provided current password matches the user's current password
     if (password == user1.password) {
       // Update the user's password with the new password
+      const hashedPassword = await bcrypt.hash(newpassword, 10);
       const updatedUser = await User.update(
-        { password: newpassword },
+        { password: hashedPassword  },
         { where: { id: userId } }
       );
       res.status(200).json(updatedUser); // Respond with the updated user object
@@ -125,6 +126,29 @@ const updateUserPassword = async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({ error: 'Error updating the user' }); // Respond with a generic error message if an exception occurs
+  }
+};
+
+const updateUserPasswordbyAdmin = async (req, res) => {
+  try {
+    const { Rfid, newpassword } = req.body; // Extract RFID and new password from the request body
+    // Find the user by their RFID
+    const user1 = await User.findOne({ where: { rfid: Rfid } });  
+    if (!user1) {
+      return res.status(200).json({ error: 'RFID Not Found' });
+    }
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newpassword, 10);
+    // Update the user's password
+    user1.password = hashedPassword;
+    
+    // Save the updated user record
+    await user1.save();
+
+    res.status(200).json({ message: 'Password updated successfully' });
+  } catch (err) {
+    console.error('Error updating the user:', err);
+    res.status(500).json({ error: 'Error updating the user' });
   }
 };
 
@@ -230,5 +254,6 @@ module.exports = {
   getUserByRFId,
   Recharge,
   getUserByUserName,
-  updateRfid
+  updateRfid,
+  updateUserPasswordbyAdmin
 };

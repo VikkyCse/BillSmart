@@ -34,7 +34,11 @@ router.put('/',authenticateToken, userController.Recharge);
 router.delete('/:id',authenticateToken, userController.deleteUser);
 
 // Update password by user (accessible to all)
-router.put('/:id/update-password',authenticateToken,authorizeAdmin, userController.updateUserPassword);
+router.put('/:id/update-password',authenticateToken, userController.updateUserPassword);
+
+
+// /----------------------------------- Update Password By Admin ------------------------
+router.post('/update-password',authenticateToken,authorizeAdmin, userController.updateUserPasswordbyAdmin);
 
 module.exports = router;
 
