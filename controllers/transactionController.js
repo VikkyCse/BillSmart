@@ -786,7 +786,7 @@ const refundWithQuantity = async (req, res) => {
         }
 
         // Refund the item
-        const refundedAmount = orderItem.Count * item.price;
+        const refundedAmount = orderItem.Quantity * item.price;
         const user = await User.findByPk(transaction.user_id, { transaction: t });
         user.Amount += refundedAmount;
         await user.save({ transaction: t });
@@ -855,7 +855,7 @@ const refundWithoutQuantity = async (req, res) => {
         }
 
         // Refund the item
-        const refundedAmount = orderItem.Count * item.price;
+        const refundedAmount = orderItem.Quantity * item.price;
         const user = await User.findByPk(transaction.user_id, { transaction: t });
         user.Amount += refundedAmount;
         await user.save({ transaction: t });
