@@ -26,6 +26,8 @@ router.get('/notcompleted/:id',authenticateToken, transactionController.getIncom
 // Update a transaction by ID
 router.put('/:id',authenticateToken, transactionController.updateTransaction);
 
+router.put('/complete/:id',authenticateToken, transactionController.Transactioncompletion);
+
 // Delete a transaction by ID
 router.delete('/:id',authenticateToken, transactionController.deleteTransaction);
 

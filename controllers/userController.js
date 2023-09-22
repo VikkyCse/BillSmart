@@ -88,15 +88,21 @@ const updateRfid = async (req, res) => {
   try {
     const rollNo = req.params.rollNo;
     const { rfid } = req.body;
-    const updatedUser = await User.update(
+    const [rowsAffected, updatedUsers] = await User.update(
       { rfid },
       { where: { rollNo: rollNo } }
     );
-    res.status(200).json(updatedUser);
+
+    if (rowsAffected > 0) {
+      res.status(200).json(updatedUsers);
+    } else {
+      res.status(200).json({ error: 'User not found' });
+    }
   } catch (err) {
     res.status(500).json({ error: 'Error updating the user' });
   }
 };
+
 
 const updateUserPassword = async (req, res) => {
   try {

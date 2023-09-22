@@ -953,6 +953,32 @@ async function fetchDataByItemAndDateSpan(req, res) {
   }
 }
 
+const Transactioncompletion = async (req, res) => {
+  const transactionId = req.params.id;
+  try {
+    // Check if the transaction is already completed
+    const existingTransaction = await Transaction.findOne({
+      where: { id: transactionId, Is_completed: 1 },
+    });
+
+    if (existingTransaction) {
+      return res.status(200).json({ completed: 'Transaction is already completed' });
+    }
+
+    // If not completed, update the transaction status to completed (Is_completed: 1)
+    await Transaction.update(
+      { Is_completed: 1 },
+      { where: { id: transactionId } }
+    );
+
+    res.status(200).json({ message: 'Transaction updated successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error updating the transaction' });
+  }
+};
+
+
+
 
 
 
@@ -976,5 +1002,6 @@ module.exports = {
   getIncompleteTransactionsbyUser,
   createNaturalTransactionByAdmin,
   refundWithQuantity,
-  refundWithoutQuantity
+  refundWithoutQuantity,
+  Transactioncompletion
 };
