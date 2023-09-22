@@ -4,13 +4,12 @@ const OrderItem = require('../models/orderItem');
 const User = require('../models/User');
 const Cart = require('../models/Cart');
 const CartItem = require('../models/Cart_Items');
-
 const { Op } = require('sequelize');
 const Item = require('../models/Item');
 const sequelize = require('../models/database');
 const Naturals = require('../models/Naturals');
 const currentDate = new Date();
-
+const Shop = require('../models/shop');
 const createTransaction = async (req, res) => {
   const {
     Amount,
