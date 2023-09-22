@@ -99,20 +99,20 @@ const getItemById = async (req, res) => {
 const updateItem = async (req, res) => {
   try {
     const itemId = req.params.id;
-    const Item= await Item.findByPk(itemId)
+    const item= await Item.findByPk(itemId)
 
 
     let updateData = {
-      name:req.body.name || Item.name,
-      veg:req.body.veg || Item.veg,
-      price:req.body.price || Item.price,
-      quantity:req.body.quantity || Item.quantity,
-      availableForPreorder:req.body.availableForPreorder || Item.availableForPreorder ,
-      preorderQuantity:req.body.preorderQuantity || Item.preorderQuantity,
-      Hide:req.body.Hide || Item.Hide,
-      AvlMrng : req.body.AvlMrng || Item.AvlMrng,
-      AvlAn: req.body.AvlAn || Item.AvlAn,
-      AvlEve: req.body.AvlEve || Item.AvlEve,
+      name:req.body.name || item.name,
+      veg:req.body.veg || item.veg,
+      price:req.body.price || item.price,
+      quantity:req.body.quantity || item.quantity,
+      availableForPreorder:req.body.availableForPreorder || item.availableForPreorder ,
+      preorderQuantity:req.body.preorderQuantity || item.preorderQuantity,
+      Hide:req.body.Hide || item.Hide,
+      AvlMrng : req.body.AvlMrng || item.AvlMrng,
+      AvlAn: req.body.AvlAn || item.AvlAn,
+      AvlEve: req.body.AvlEve || item.AvlEve,
      
     };
 

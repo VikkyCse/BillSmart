@@ -6,19 +6,19 @@ const activeTokens = {};
 // Registration controller
 const register = async (req, res) => {
   try {
-    const { User_name, password, gender, isHosteller, rollNo } = req.body;
-
+    const { User_name, password, gender, isHosteller, rollNo,name } = req.body;
+  
     // Check if the username already exists
     const existingUser = await User.findOne({ where: { User_name } });
 
     if (existingUser) {
-      return res.status(400).json({ error: 'Username already exists' });
+      return res.status(200).json({ error: 'Username already exists' });
     }
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await User.create({ User_name, password: hashedPassword, usertype:0, gender, isHosteller, rollNo });
+    await User.create({ name, User_name : User_name.toLowerCase(), password: hashedPassword, usertype:0, gender, isHosteller, rollNo : rollNo.toUpperCase(), natural_amt:0,amount:0 });
 
   
     res.status(201).json({ message : "success"});
