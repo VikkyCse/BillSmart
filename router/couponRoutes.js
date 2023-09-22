@@ -7,7 +7,7 @@ const { authenticateToken, authorizeAdmin ,authorizeUser } = require('../middlew
 router.post('/coupons',authenticateToken,authorizeAdmin, couponController.createCoupon);
 
 // Read all coupons
-router.get('/coupons',authenticateToken, couponController.getAllCoupons);
+router.get('/coupons',authenticateToken,authorizeAdmin, couponController.getAllCoupons);
 
 // Read a specific coupon by ID
 router.get('/coupons/:id', authenticateToken,couponController.getCouponById);

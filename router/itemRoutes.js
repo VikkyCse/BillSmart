@@ -4,7 +4,7 @@ const itemController = require('../controllers/itemController');
 const { authenticateToken, authorizeAdmin ,authorizeUser } = require('../middleware/authMiddleware');
 
 // Create a new item
-router.post('/create', itemController.imgupload,itemController.createItem);
+router.post('/create', authenticateToken,authorizeAdmin, itemController.imgupload,itemController.createItem);
 // router.post('/create-shop', shopController.upload, shopController.createShop);
 
 
@@ -19,6 +19,6 @@ router.get('/byid/:id',authenticateToken, itemController.getItemById);
 router.put('/:id',authenticateToken,authorizeAdmin, itemController.imgupload, itemController.updateItem);
     
 // Delete an item by ID
-router.delete('/:id',authenticateToken, itemController.deleteItem);
+router.delete('/:id',authenticateToken,authorizeAdmin, itemController.deleteItem);
 
 module.exports = router;

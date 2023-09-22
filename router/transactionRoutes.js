@@ -5,13 +5,13 @@ const { authenticateToken, authorizeAdmin ,authorizeUser } = require('../middlew
 
 // Create a new transaction
 router.post('/',authenticateToken, transactionController.createTransaction);
-router.post('/createTransactionByAdmin',authenticateToken, transactionController.createTransactionByAdmin);
+router.post('/createTransactionByAdmin',authenticateToken,authorizeAdmin, transactionController.createTransactionByAdmin);
 router.post('/createTransactionByUser',authenticateToken, transactionController.createTransactionByUser);
 router.get('/orders/:orderId',authenticateToken, transactionController.getOrderItemsByOrderId);
 router.post('/checkQuantity',authenticateToken, transactionController.checkQuantity);
 router.get('/getItemForBill',authenticateToken,transactionController.getItemForBill)
 
-router.post('/createNaturalTransactionByAdmin',authenticateToken, transactionController.createNaturalTransactionByAdmin);
+router.post('/createNaturalTransactionByAdmin',authenticateToken,authorizeAdmin, transactionController.createNaturalTransactionByAdmin);
 
 // Read all transactions
 router.get('/',authenticateToken, transactionController.getAllTransactions);
@@ -24,17 +24,17 @@ router.get('/:id',authenticateToken, transactionController.getAllTransactionsbyU
 router.get('/notcompleted/:id',authenticateToken, transactionController.getIncompleteTransactionsbyUser);
 
 // Update a transaction by ID
-router.put('/:id',authenticateToken, transactionController.updateTransaction);
+router.put('/:id',authenticateToken,authorizeAdmin, transactionController.updateTransaction);
 
 router.put('/complete/:id',authenticateToken, transactionController.Transactioncompletion);
 
 // Delete a transaction by ID
-router.delete('/:id',authenticateToken, transactionController.deleteTransaction);
+router.delete('/:id',authenticateToken,authorizeAdmin, transactionController.deleteTransaction);
 
 //refund a transaction
-router.post('/refund',authenticateToken, transactionController.refund);
-router.post('/refundwithQty',authenticateToken, transactionController.refundWithQuantity);
-router.post('/refundwithoutQty',authenticateToken, transactionController.refundWithoutQuantity);
+router.post('/refund',authenticateToken,authorizeAdmin, transactionController.refund);
+router.post('/refundwithQty',authenticateToken,authorizeAdmin, transactionController.refundWithQuantity);
+router.post('/refundwithoutQty',authenticateToken,authorizeAdmin, transactionController.refundWithoutQuantity);
 // Fetch data by Item ID
 router.get('/fetchDataByItemId/:itemId', transactionController.fetchDataByItemId);
 

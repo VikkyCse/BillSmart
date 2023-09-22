@@ -3,7 +3,7 @@ const router = express.Router();
 const categoryController = require('../controllers/categoryController');
 const { authenticateToken, authorizeAdmin ,authorizeUser } = require('../middleware/authMiddleware');
 // Create a new category
-router.post('/',authenticateToken, categoryController.Upload, categoryController.createCategory);
+router.post('/',authenticateToken,authorizeAdmin, categoryController.Upload, categoryController.createCategory);
 // router.post('/', categoryController.createCategory);
 
 // Read all categories
@@ -15,11 +15,11 @@ router.get('/byname/:name',authenticateToken, categoryController.getCategoryByNa
 
 // Update a category by ID
 // router.put('/:id', categoryController.updateCategory);
-router.put('/:id',authenticateToken, categoryController.Upload, categoryController.updateCategory);
+router.put('/:id',authenticateToken,authorizeAdmin, categoryController.Upload, categoryController.updateCategory);
 router.get('/byshop/:id',authenticateToken, categoryController.getAllCategoriesByShopId);
 
 
 // Delete a category by ID
-router.delete('/:id',authenticateToken, categoryController.deleteCategory);
+router.delete('/:id',authenticateToken,authorizeAdmin, categoryController.deleteCategory);
 
 module.exports = router;
