@@ -10,7 +10,7 @@ const createItem = async (req, res) => {
   try {
    
     // const { name, veg, image, price, categoryname ,quantity} = req.body;
-    const category = await Category.findOne({where: { name:req.body.categoryname}})
+    const category = await Category.findByPk(req.body.category_id)
 
   console.log(category)
     if(!category){

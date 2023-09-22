@@ -7,9 +7,9 @@ const path=require('path');
 // Create a new category
 const createCategory = async (req, res) => {
   try {
-    const { name, Shopname } = req.body;
+    const { name, ShopId } = req.body;
     
-    const shop = await Shop.findOne({where:{name:Shopname}})
+    const shop = await Shop.findByPk(ShopId)
     if(!shop){
       res.send(JSON.stringify({"messsage":"shop not found"}))
       return

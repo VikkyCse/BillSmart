@@ -976,6 +976,25 @@ const Transactioncompletion = async (req, res) => {
     res.status(500).json({ error: 'Error updating the transaction' });
   }
 };
+const getItemForBill = async (req, res) => {
+  console.log("enter");
+  try {
+    const availableItem = await Item.findAll({where:{Quantity:{[Op.gt]:0}},
+      attributes: ['id','name', 'price', 'quantity', 'Shop_id'],
+    });
+
+    const result = await Promise.all(availableItem.map(async (ele) => {
+      console.log(ele);
+      const shopname = (await Shop.findByPk(ele.Shop_id)).name;
+      const data = { ...ele.dataValues, shopname };
+      return data;
+    }));
+
+    res.send(JSON.stringify( result ));
+  } catch (err) {
+    res.send(JSON.stringify({ error: err.message }));
+  }
+};
 
 
 
@@ -1003,5 +1022,6 @@ module.exports = {
   createNaturalTransactionByAdmin,
   refundWithQuantity,
   refundWithoutQuantity,
-  Transactioncompletion
+  Transactioncompletion,
+  getItemForBill
 };

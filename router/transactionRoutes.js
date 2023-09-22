@@ -9,7 +9,7 @@ router.post('/createTransactionByAdmin',authenticateToken, transactionController
 router.post('/createTransactionByUser',authenticateToken, transactionController.createTransactionByUser);
 router.get('/orders/:orderId',authenticateToken, transactionController.getOrderItemsByOrderId);
 router.post('/checkQuantity',authenticateToken, transactionController.checkQuantity);
-
+router.get('/getItemForBill',authenticateToken,transactionController.getItemForBill)
 
 router.post('/createNaturalTransactionByAdmin',authenticateToken, transactionController.createNaturalTransactionByAdmin);
 

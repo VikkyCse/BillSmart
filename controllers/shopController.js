@@ -28,6 +28,7 @@ const createShop = async (req, res) => {
 const getAllShops = async (req, res) => {
   try {
     const shops = await Shop.findAll();
+    console.log(shops)
     res.status(200).json(shops);
   } catch (err) {
     res.status(500).json({ error: 'Error fetching shops' , err});
