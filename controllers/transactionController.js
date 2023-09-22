@@ -302,7 +302,7 @@ const createNaturalTransactionByAdmin = async (req, res) => {
             Is_completed: Iscompleted,
             order_id: Natorder.id, 
             transactiontype: user.gender==0? 7:6, 
-            user_id, 
+            user_id:user.id, 
           },{ transaction: t });
           AllTransactions.push(naturaldayscolarTransaction)
           user.amount -=  availableItem.price;
